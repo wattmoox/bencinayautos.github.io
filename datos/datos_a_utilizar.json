@@ -3,199 +3,181 @@
     "País":"Bolivia",
     "Sedán Más Vendido (Combustión)":"Suzuki Dzire",
     "Consumo Mixto Aprox.":19.5,
-    "Precio Aprox. Litro Gasolina (USD)":1008.0,
-    "Litros cargados con 50 dolares":0.0496031746,
-    "Kilometros cargados con 50 dolares":0.9672619048,
+    "Precio Aprox. Litro Gasolina (USD)":1.008,
+    "Litros cargados con 50 dolares":49.6031746032,
+    "Kilometros cargados con 50 dolares":967.2619047619,
     "iso_alpha":"BOL",
-    "Continente":"América",
-    "Categoria":"Top 2"
+    "Continente":"América"
   },
   {
     "País":"Paraguay",
     "Sedán Más Vendido (Combustión)":"Kia Soluto",
     "Consumo Mixto Aprox.":15.5,
-    "Precio Aprox. Litro Gasolina (USD)":1076.0,
-    "Litros cargados con 50 dolares":0.0464684015,
-    "Kilometros cargados con 50 dolares":0.720260223,
+    "Precio Aprox. Litro Gasolina (USD)":1.076,
+    "Litros cargados con 50 dolares":46.468401487,
+    "Kilometros cargados con 50 dolares":720.2602230483,
     "iso_alpha":"PRY",
-    "Continente":"América",
-    "Categoria":"Top 2"
-  },
-  {
-    "País":"India",
-    "Sedán Más Vendido (Combustión)":"Maruti Suzuki Dzire",
-    "Consumo Mixto Aprox.":22.5,
-    "Precio Aprox. Litro Gasolina (USD)":1085.0,
-    "Litros cargados con 50 dolares":0.0460829493,
-    "Kilometros cargados con 50 dolares":1.0368663594,
-    "iso_alpha":"IND",
-    "Continente":"Asia",
-    "Categoria":"Top 2"
-  },
-  {
-    "País":"Japón",
-    "Sedán Más Vendido (Combustión)":"Toyota Corolla",
-    "Consumo Mixto Aprox.":14.5,
-    "Precio Aprox. Litro Gasolina (USD)":1054.0,
-    "Litros cargados con 50 dolares":0.0474383302,
-    "Kilometros cargados con 50 dolares":0.6878557875,
-    "iso_alpha":null,
-    "Continente":"Asia",
-    "Categoria":"Top 2"
-  },
-  {
-    "País":"Polonia",
-    "Sedán Más Vendido (Combustión)":"Skoda Octavia",
-    "Consumo Mixto Aprox.":16.5,
-    "Precio Aprox. Litro Gasolina (USD)":1698.0,
-    "Litros cargados con 50 dolares":0.0294464075,
-    "Kilometros cargados con 50 dolares":0.4858657244,
-    "iso_alpha":null,
-    "Continente":"Europa",
-    "Categoria":"Top 2"
-  },
-  {
-    "País":"Ucrania",
-    "Sedán Más Vendido (Combustión)":"Skoda Octavia",
-    "Consumo Mixto Aprox.":16.5,
-    "Precio Aprox. Litro Gasolina (USD)":1732.0,
-    "Litros cargados con 50 dolares":0.0288683603,
-    "Kilometros cargados con 50 dolares":0.4763279446,
-    "iso_alpha":null,
-    "Continente":"Europa",
-    "Categoria":"Top 2"
-  },
-  {
-    "País":"Australia",
-    "Sedán Más Vendido (Combustión)":"Toyota Corolla",
-    "Consumo Mixto Aprox.":14.5,
-    "Precio Aprox. Litro Gasolina (USD)":1447.0,
-    "Litros cargados con 50 dolares":0.0345542502,
-    "Kilometros cargados con 50 dolares":0.5010366275,
-    "iso_alpha":"AUS",
-    "Continente":"Oceanía",
-    "Categoria":"Top 2"
-  },
-  {
-    "País":"Sudáfrica",
-    "Sedán Más Vendido (Combustión)":"Volkswagen Polo Sedan",
-    "Consumo Mixto Aprox.":14.5,
-    "Precio Aprox. Litro Gasolina (USD)":1397.0,
-    "Litros cargados con 50 dolares":0.0357909807,
-    "Kilometros cargados con 50 dolares":0.5189692198,
-    "iso_alpha":null,
-    "Continente":"África",
-    "Categoria":"Top 2"
-  },
-  {
-    "País":"Marruecos",
-    "Sedán Más Vendido (Combustión)":"Dacia Logan",
-    "Consumo Mixto Aprox.":16.5,
-    "Precio Aprox. Litro Gasolina (USD)":1662.0,
-    "Litros cargados con 50 dolares":0.0300842359,
-    "Kilometros cargados con 50 dolares":0.4963898917,
-    "iso_alpha":null,
-    "Continente":"África",
-    "Categoria":"Top 2"
-  },
-  {
-    "País":"Uruguay",
-    "Sedán Más Vendido (Combustión)":"Chevrolet Onix Plus",
-    "Consumo Mixto Aprox.":16.5,
-    "Precio Aprox. Litro Gasolina (USD)":2044.0,
-    "Litros cargados con 50 dolares":0.0244618395,
-    "Kilometros cargados con 50 dolares":0.4036203523,
-    "iso_alpha":"URY",
-    "Continente":"América",
-    "Categoria":"Bottom 2"
+    "Continente":"América"
   },
   {
     "País":"Chile",
     "Sedán Más Vendido (Combustión)":"Nissan Versa",
     "Consumo Mixto Aprox.":15.0,
-    "Precio Aprox. Litro Gasolina (USD)":1706.0,
-    "Litros cargados con 50 dolares":0.0293083236,
-    "Kilometros cargados con 50 dolares":0.4396248535,
+    "Precio Aprox. Litro Gasolina (USD)":1.706,
+    "Litros cargados con 50 dolares":29.3083235639,
+    "Kilometros cargados con 50 dolares":439.6248534584,
     "iso_alpha":"CHL",
-    "Continente":"América",
-    "Categoria":"Bottom 2"
+    "Continente":"América"
   },
   {
-    "País":"Corea del Sur",
-    "Sedán Más Vendido (Combustión)":"Hyundai Grandeur",
-    "Consumo Mixto Aprox.":10.5,
-    "Precio Aprox. Litro Gasolina (USD)":1495.0,
-    "Litros cargados con 50 dolares":0.0334448161,
-    "Kilometros cargados con 50 dolares":0.3511705686,
+    "País":"Uruguay",
+    "Sedán Más Vendido (Combustión)":"Chevrolet Onix Plus",
+    "Consumo Mixto Aprox.":16.5,
+    "Precio Aprox. Litro Gasolina (USD)":2.044,
+    "Litros cargados con 50 dolares":24.4618395303,
+    "Kilometros cargados con 50 dolares":403.6203522505,
+    "iso_alpha":"URY",
+    "Continente":"América"
+  },
+  {
+    "País":"India",
+    "Sedán Más Vendido (Combustión)":"Maruti Suzuki Dzire",
+    "Consumo Mixto Aprox.":22.5,
+    "Precio Aprox. Litro Gasolina (USD)":1.085,
+    "Litros cargados con 50 dolares":46.0829493088,
+    "Kilometros cargados con 50 dolares":1036.866359447,
+    "iso_alpha":"IND",
+    "Continente":"Asia"
+  },
+  {
+    "País":"Japón",
+    "Sedán Más Vendido (Combustión)":"Toyota Corolla",
+    "Consumo Mixto Aprox.":14.5,
+    "Precio Aprox. Litro Gasolina (USD)":1.054,
+    "Litros cargados con 50 dolares":47.4383301708,
+    "Kilometros cargados con 50 dolares":687.8557874763,
     "iso_alpha":null,
-    "Continente":"Asia",
-    "Categoria":"Bottom 2"
+    "Continente":"Asia"
   },
   {
     "País":"Filipinas",
     "Sedán Más Vendido (Combustión)":"Toyota Vios",
     "Consumo Mixto Aprox.":15.5,
-    "Precio Aprox. Litro Gasolina (USD)":1610.0,
-    "Litros cargados con 50 dolares":0.0310559006,
-    "Kilometros cargados con 50 dolares":0.4813664596,
+    "Precio Aprox. Litro Gasolina (USD)":1.61,
+    "Litros cargados con 50 dolares":31.0559006211,
+    "Kilometros cargados con 50 dolares":481.3664596273,
     "iso_alpha":null,
-    "Continente":"Asia",
-    "Categoria":"Bottom 2"
+    "Continente":"Asia"
   },
   {
-    "País":"Alemania",
-    "Sedán Más Vendido (Combustión)":"BMW Serie 3",
-    "Consumo Mixto Aprox.":14.5,
-    "Precio Aprox. Litro Gasolina (USD)":2472.0,
-    "Litros cargados con 50 dolares":0.0202265372,
-    "Kilometros cargados con 50 dolares":0.2932847896,
+    "País":"Corea del Sur",
+    "Sedán Más Vendido (Combustión)":"Hyundai Grandeur",
+    "Consumo Mixto Aprox.":10.5,
+    "Precio Aprox. Litro Gasolina (USD)":1.495,
+    "Litros cargados con 50 dolares":33.4448160535,
+    "Kilometros cargados con 50 dolares":351.1705685619,
     "iso_alpha":null,
-    "Continente":"Europa",
-    "Categoria":"Bottom 2"
+    "Continente":"Asia"
+  },
+  {
+    "País":"Polonia",
+    "Sedán Más Vendido (Combustión)":"Skoda Octavia",
+    "Consumo Mixto Aprox.":16.5,
+    "Precio Aprox. Litro Gasolina (USD)":1.698,
+    "Litros cargados con 50 dolares":29.4464075383,
+    "Kilometros cargados con 50 dolares":485.8657243816,
+    "iso_alpha":null,
+    "Continente":"Europa"
+  },
+  {
+    "País":"Ucrania",
+    "Sedán Más Vendido (Combustión)":"Skoda Octavia",
+    "Consumo Mixto Aprox.":16.5,
+    "Precio Aprox. Litro Gasolina (USD)":1.732,
+    "Litros cargados con 50 dolares":28.8683602771,
+    "Kilometros cargados con 50 dolares":476.3279445727,
+    "iso_alpha":null,
+    "Continente":"Europa"
   },
   {
     "País":"Grecia",
     "Sedán Más Vendido (Combustión)":"Toyota Corolla",
     "Consumo Mixto Aprox.":14.5,
-    "Precio Aprox. Litro Gasolina (USD)":2432.0,
-    "Litros cargados con 50 dolares":0.0205592105,
-    "Kilometros cargados con 50 dolares":0.2981085526,
+    "Precio Aprox. Litro Gasolina (USD)":2.432,
+    "Litros cargados con 50 dolares":20.5592105263,
+    "Kilometros cargados con 50 dolares":298.1085526316,
     "iso_alpha":null,
-    "Continente":"Europa",
-    "Categoria":"Bottom 2"
+    "Continente":"Europa"
+  },
+  {
+    "País":"Alemania",
+    "Sedán Más Vendido (Combustión)":"BMW Serie 3",
+    "Consumo Mixto Aprox.":14.5,
+    "Precio Aprox. Litro Gasolina (USD)":2.472,
+    "Litros cargados con 50 dolares":20.2265372168,
+    "Kilometros cargados con 50 dolares":293.284789644,
+    "iso_alpha":null,
+    "Continente":"Europa"
+  },
+  {
+    "País":"Australia",
+    "Sedán Más Vendido (Combustión)":"Toyota Corolla",
+    "Consumo Mixto Aprox.":14.5,
+    "Precio Aprox. Litro Gasolina (USD)":1.447,
+    "Litros cargados con 50 dolares":34.5542501728,
+    "Kilometros cargados con 50 dolares":501.0366275052,
+    "iso_alpha":"AUS",
+    "Continente":"Oceanía"
+  },
+  {
+    "País":"Sudáfrica",
+    "Sedán Más Vendido (Combustión)":"Volkswagen Polo Sedan",
+    "Consumo Mixto Aprox.":14.5,
+    "Precio Aprox. Litro Gasolina (USD)":1.397,
+    "Litros cargados con 50 dolares":35.7909806729,
+    "Kilometros cargados con 50 dolares":518.9692197566,
+    "iso_alpha":null,
+    "Continente":"África"
+  },
+  {
+    "País":"Marruecos",
+    "Sedán Más Vendido (Combustión)":"Dacia Logan",
+    "Consumo Mixto Aprox.":16.5,
+    "Precio Aprox. Litro Gasolina (USD)":1.662,
+    "Litros cargados con 50 dolares":30.0842358604,
+    "Kilometros cargados con 50 dolares":496.3898916968,
+    "iso_alpha":null,
+    "Continente":"África"
   },
   {
     "País":"Hong Kong",
     "Sedán Más Vendido (Combustión)":"Mercedes Benz Class E",
     "Consumo Mixto Aprox.":14.0,
-    "Precio Aprox. Litro Gasolina (USD)":4135.0,
-    "Litros cargados con 50 dolares":0.0120918984,
-    "Kilometros cargados con 50 dolares":0.169286578,
+    "Precio Aprox. Litro Gasolina (USD)":4.135,
+    "Litros cargados con 50 dolares":12.0918984281,
+    "Kilometros cargados con 50 dolares":169.2865779927,
     "iso_alpha":"HKG",
-    "Continente":null,
-    "Categoria":null
+    "Continente":null
   },
   {
     "País":"Nueva Zelanda",
     "Sedán Más Vendido (Combustión)":"Toyota Corolla",
     "Consumo Mixto Aprox.":14.5,
-    "Precio Aprox. Litro Gasolina (USD)":2086.0,
-    "Litros cargados con 50 dolares":0.0239693193,
-    "Kilometros cargados con 50 dolares":0.3475551294,
+    "Precio Aprox. Litro Gasolina (USD)":2.086,
+    "Litros cargados con 50 dolares":23.9693192713,
+    "Kilometros cargados con 50 dolares":347.5551294343,
     "iso_alpha":null,
-    "Continente":null,
-    "Categoria":null
+    "Continente":null
   },
   {
     "País":"Estados Unidos",
     "Sedán Más Vendido (Combustión)":"Toyota Camry",
     "Consumo Mixto Aprox.":13.5,
-    "Precio Aprox. Litro Gasolina (USD)":1175.0,
-    "Litros cargados con 50 dolares":0.0425531915,
-    "Kilometros cargados con 50 dolares":0.5744680851,
+    "Precio Aprox. Litro Gasolina (USD)":1.175,
+    "Litros cargados con 50 dolares":42.5531914894,
+    "Kilometros cargados con 50 dolares":574.4680851064,
     "iso_alpha":null,
-    "Continente":"América",
-    "Categoria":null
+    "Continente":"América"
   },
   {
     "País":"Rusia",
@@ -205,18 +187,16 @@
     "Litros cargados con 50 dolares":null,
     "Kilometros cargados con 50 dolares":null,
     "iso_alpha":null,
-    "Continente":"Europa",
-    "Categoria":null
+    "Continente":"Europa"
   },
   {
     "País":"China",
     "Sedán Más Vendido (Combustión)":"Nissan Sylphy",
     "Consumo Mixto Aprox.":17.0,
-    "Precio Aprox. Litro Gasolina (USD)":1402.0,
-    "Litros cargados con 50 dolares":0.0356633381,
-    "Kilometros cargados con 50 dolares":0.6062767475,
+    "Precio Aprox. Litro Gasolina (USD)":1.402,
+    "Litros cargados con 50 dolares":35.6633380884,
+    "Kilometros cargados con 50 dolares":606.2767475036,
     "iso_alpha":"CHN",
-    "Continente":"Asia",
-    "Categoria":null
+    "Continente":"Asia"
   }
 ]
