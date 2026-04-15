@@ -43,7 +43,7 @@
   <div id="mapa"></div>
 
   <script>
-    fetch("datos.json")
+    fetch("datos/datos_limpios.json")
       .then(response => response.json())
       .then(datos => {
         const locations = datos.map(d => d.iso_alpha);
