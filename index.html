@@ -1,42 +1,98 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <title>Mapa con CSV</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mapa con Plotly</title>
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
+
+    header {
+      text-align: center;
+      padding: 24px 16px 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    p {
+      margin-top: 8px;
+      color: #cbd5e1;
+    }
+
+    #mapa {
+      width: 100%;
+      height: 80vh;
+    }
+  </style>
 </head>
 <body>
-  <div id="mapa" style="width: 100%; height: 600px;"></div>
+  <header>
+    <h1>Mapa de países</h1>
+    <p>Pasa el cursor sobre los países que están en tus datos</p>
+  </header>
+
+  <div id="mapa"></div>
 
   <script>
-    Plotly.d3.csv("datos.csv", function(err, rows) {
-      if (err) {
-        console.error(err);
-        return;
-      }
+    fetch("datos.json")
+      .then(response => response.json())
+      .then(datos => {
+        const locations = datos.map(d => d.iso_alpha);
+        const nombres = datos.map(d => d.pais);
 
-      const locations = rows.map(r => r.codigo_iso);
-      const z = rows.map(r => Number(r.valor));
-      const text = rows.map(r => r.pais);
+        const trace = {
+          type: "choropleth",
+          locationmode: "ISO-3",
+          locations: locations,
+          z: new Array(datos.length).fill(1),
+          text: nombres,
+          hovertemplate: "<b>%{text}</b><extra></extra>",
+          colorscale: [
+            [0, "#38bdf8"],
+            [1, "#38bdf8"]
+          ],
+          showscale: false,
+          marker: {
+            line: {
+              color: "white",
+              width: 0.5
+            }
+          }
+        };
 
-      const data = [{
-        type: "choropleth",
-        locations: locations,
-        z: z,
-        text: text,
-        colorscale: "Blues",
-        colorbar: { title: "Valor" }
-      }];
+        const layout = {
+          paper_bgcolor: "#0f172a",
+          plot_bgcolor: "#0f172a",
+          margin: { t: 20, r: 0, b: 0, l: 0 },
+          geo: {
+            scope: "world",
+            projection: { type: "natural earth" },
+            bgcolor: "#0f172a",
+            showframe: false,
+            showcoastlines: true,
+            coastlinecolor: "#94a3b8",
+            showland: true,
+            landcolor: "#1e293b",
+            countrycolor: "#64748b"
+          }
+        };
 
-      const layout = {
-        title: "Mapa desde CSV",
-        geo: {
-          projection: { type: "natural earth" }
-        }
-      };
-
-      Plotly.newPlot("mapa", data, layout);
-    });
+        Plotly.newPlot("mapa", [trace], layout, { responsive: true });
+      })
+      .catch(error => {
+        console.error("Error al cargar el JSON:", error);
+        document.getElementById("mapa").innerHTML =
+          "<p style='text-align:center; padding:20px;'>No se pudo cargar datos.json</p>";
+      });
   </script>
 </body>
 </html>
