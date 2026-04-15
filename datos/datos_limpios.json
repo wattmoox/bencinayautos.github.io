@@ -81,21 +81,21 @@
     "iso_alpha":"SLV"
   },
   {
-    "País":"Guatemala",
-    "Sedán Más Vendido (Combustión)":"Toyota Yaris",
-    "Consumo Mixto Aprox.":16.0,
-    "Precio Aprox. Litro Gasolina (USD)":1437.0,
-    "Litros cargados con 50 dolares":0.0347947112,
-    "Kilometros cargados con 50 dolares":0.5567153793,
-    "iso_alpha":"GTM"
+    "País":"Hong Kong",
+    "Sedán Más Vendido (Combustión)":"Mercedes Benz Class E",
+    "Consumo Mixto Aprox.":14.0,
+    "Precio Aprox. Litro Gasolina (USD)":4135.0,
+    "Litros cargados con 50 dolares":0.0120918984,
+    "Kilometros cargados con 50 dolares":0.169286578,
+    "iso_alpha":"HKG"
   },
   {
-    "País":"Haití",
+    "País":"Nueva Zelanda",
     "Sedán Más Vendido (Combustión)":"Toyota Corolla",
     "Consumo Mixto Aprox.":14.5,
-    "Precio Aprox. Litro Gasolina (USD)":1463.0,
-    "Litros cargados con 50 dolares":0.03417635,
-    "Kilometros cargados con 50 dolares":0.4955570745,
+    "Precio Aprox. Litro Gasolina (USD)":2086.0,
+    "Litros cargados con 50 dolares":0.0239693193,
+    "Kilometros cargados con 50 dolares":0.3475551294,
     "iso_alpha":null
   },
   {
