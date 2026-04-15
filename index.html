@@ -3,96 +3,52 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mapa con Plotly</title>
+  <title>Mapa interactivo con Plotly</title>
+
+  <link rel="stylesheet" href="styles.css" />
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-    }
-
-    header {
-      text-align: center;
-      padding: 24px 16px 8px;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-
-    p {
-      margin-top: 8px;
-      color: #cbd5e1;
-    }
-
-    #mapa {
-      width: 100%;
-      height: 80vh;
-    }
-  </style>
 </head>
 <body>
   <header>
-    <h1>Mapa de países</h1>
-    <p>Pasa el cursor sobre los países que están en tus datos</p>
+    <h1>Mapa mundial de rendimiento con 50 USD</h1>
+    <p class="subtitle">
+      Cada país se colorea según cuántos kilómetros puede recorrer el sedán más vendido con 50 dólares de gasolina.
+      Pasa el cursor sobre cada país para ver el modelo, el consumo y el rendimiento estimado.
+    </p>
   </header>
 
-  <div id="mapa"></div>
+  <main class="dashboard">
+    <section class="card">
+      <div id="mapa"></div>
+    </section>
 
-  <script>
-    fetch("datos/datos_limpios.json")
-      .then(response => response.json())
-      .then(datos => {
-        const locations = datos.map(d => d.iso_alpha);
-        const nombres = datos.map(d => d.pais);
+    <aside class="card sidebar">
+      <div class="metric">
+        <div class="metric-label">Países representados</div>
+        <div class="metric-value" id="total-paises">--</div>
+      </div>
 
-        const trace = {
-          type: "choropleth",
-          locationmode: "ISO-3",
-          locations: locations,
-          z: new Array(datos.length).fill(1),
-          text: nombres,
-          hovertemplate: "<b>%{text}</b><extra></extra>",
-          colorscale: [
-            [0, "#38bdf8"],
-            [1, "#38bdf8"]
-          ],
-          showscale: false,
-          marker: {
-            line: {
-              color: "white",
-              width: 0.5
-            }
-          }
-        };
+      <div class="metric">
+        <div class="metric-label">Mayor rendimiento</div>
+        <div class="metric-value" id="mejor-pais">--</div>
+      </div>
 
-        const layout = {
-          paper_bgcolor: "#0f172a",
-          plot_bgcolor: "#0f172a",
-          margin: { t: 20, r: 0, b: 0, l: 0 },
-          geo: {
-            scope: "world",
-            projection: { type: "natural earth" },
-            bgcolor: "#0f172a",
-            showframe: false,
-            showcoastlines: true,
-            coastlinecolor: "#94a3b8",
-            showland: true,
-            landcolor: "#1e293b",
-            countrycolor: "#64748b"
-          }
-        };
+      <div class="metric">
+        <div class="metric-label">Promedio de kilómetros con 50 USD</div>
+        <div class="metric-value" id="promedio-km">--</div>
+      </div>
 
-        Plotly.newPlot("mapa", [trace], layout, { responsive: true });
-      })
-      .catch(error => {
-        console.error("Error al cargar el JSON:", error);
-        document.getElementById("mapa").innerHTML =
-          "<p style='text-align:center; padding:20px;'>No se pudo cargar datos.json</p>";
-      });
-  </script>
+      <div class="metric ranking">
+        <h2>Top 5 países</h2>
+        <ol class="ranking-list" id="top-list"></ol>
+      </div>
+
+      <div class="note">
+        Consejo: si un país no tenía código ISO-3 en tu JSON, se completa automáticamente para que el mapa lo pueda dibujar.
+      </div>
+    </aside>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
