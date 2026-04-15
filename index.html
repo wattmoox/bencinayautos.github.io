@@ -1,103 +1,68 @@
-fetch("datos/datos_filtrados.json")
-    .then(response => response.json())
-    .then(data => {
-        const select = document.getElementById("continenteSelect");
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infografía: Autos y Bencina</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+</head>
+<body>
 
-        function getContinente(pais) {
-            const mapa = {
-                "Chile": "América",
-                "Argentina": "América",
-                "Brasil": "América",
-                "Estados Unidos": "América",
-                "Canadá": "América",
-                "Alemania": "Europa",
-                "Francia": "Europa",
-                "España": "Europa",
-                "Italia": "Europa",
-                "China": "Asia",
-                "India": "Asia",
-                "Japón": "Asia",
-                "Australia": "Oceanía",
-                "Sudáfrica": "África",
-                "Egipto": "África"
-            };
+  <header class="hero">
+    <h1>Relación entre eficiencia vehicular y precio de la gasolina</h1>
+    <p>
+      Esta infografía compara los países con mejor y peor rendimiento
+      en kilómetros recorridos con 50 USD, agrupados por continente.
+    </p>
+  </header>
 
-            return mapa[pais] || "Otro";
-        }
+  <main class="contenedor">
 
-        data.forEach(d => {
-            d.Continente = getContinente(d["País"]);
-        });
+    <section class="filtro">
+      <label for="continenteSelect">Selecciona un continente:</label>
+      <select id="continenteSelect">
+        <option value="Todos">Todos</option>
+      </select>
+    </section>
 
-        function actualizarVista(continente) {
-            let filtrado = data;
+    <section class="grafico-section">
+      <h2>2 mejores y 2 peores países por continente</h2>
+      <div id="graficoBarras"></div>
+    </section>
 
-            if (continente !== "Todos") {
-                filtrado = data.filter(
-                    d => d.Continente === continente
-                );
-            }
+    <section class="ranking-container">
+      <div class="ranking-box">
+        <h2>Top 5 mejores países</h2>
+        <ul id="topMejores"></ul>
+      </div>
 
-            crearGrafico(filtrado);
-            crearRanking(filtrado);
-        }
+      <div class="ranking-box">
+        <h2>Top 5 peores países</h2>
+        <ul id="topPeores"></ul>
+      </div>
+    </section>
 
-        function crearGrafico(datos) {
-            const x = datos.map(d => d["País"]);
-            const y = datos.map(
-                d => d["Kilometros cargados con 50 dolares"]
-            );
+    <section class="conclusiones">
+      <h2>Lectura general</h2>
+      <p id="lecturaGeneral">
+        Aquí aparecerá una breve interpretación automática de los datos.
+      </p>
 
-            const colores = y.map(valor =>
-                valor >= 800 ? "#16a34a" : "#dc2626"
-            );
+      <h2>Conclusiones</h2>
+      <p>
+        La combinación entre el precio del combustible y el rendimiento del sedán
+        más vendido de cada país genera diferencias claras en la cantidad de
+        kilómetros que pueden recorrerse con 50 USD.
+      </p>
+      <p>
+        Esta visualización resume los extremos por continente y permite identificar
+        patrones regionales de eficiencia y costo.
+      </p>
+    </section>
 
-            const trace = {
-                x: x,
-                y: y,
-                type: "bar",
-                marker: {
-                    color: colores
-                }
-            };
+  </main>
 
-            const layout = {
-                title: "Kilómetros recorridos con 50 USD",
-                xaxis: { title: "País" },
-                yaxis: { title: "Kilómetros" }
-            };
-
-            Plotly.newPlot("graficoBarras", [trace], layout);
-        }
-
-        function crearRanking(datos) {
-            const ordenados = [...datos].sort(
-                (a, b) =>
-                    b["Kilometros cargados con 50 dolares"] -
-                    a["Kilometros cargados con 50 dolares"]
-            );
-
-            const mejores = ordenados.slice(0, 5);
-            const peores = ordenados.slice(-5).reverse();
-
-            document.getElementById("topMejores").innerHTML =
-                mejores
-                    .map(d =>
-                        `<li>${d["País"]}: ${d["Kilometros cargados con 50 dolares"].toFixed(1)} km</li>`
-                    )
-                    .join("");
-
-            document.getElementById("topPeores").innerHTML =
-                peores
-                    .map(d =>
-                        `<li>${d["País"]}: ${d["Kilometros cargados con 50 dolares"].toFixed(1)} km</li>`
-                    )
-                    .join("");
-        }
-
-        select.addEventListener("change", e => {
-            actualizarVista(e.target.value);
-        });
-
-        actualizarVista("Todos");
-    });
+  <script src="script.js"></script>
+</body>
+</html>

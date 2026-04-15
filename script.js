@@ -1,148 +1,122 @@
-const isoFallback = {
-  "Brasil": "BRA",
-  "Haití": "HTI",
-  "México": "MEX",
-  "Panamá": "PAN",
-  "Perú": "PER",
-  "República Dominicana": "DOM",
-  "Estados Unidos": "USA",
-  "Rusia": "RUS",
-  "Japón": "JPN",
-  "Alemania": "DEU",
-  "Reino Unido": "GBR",
-  "Francia": "FRA",
-  "Italia": "ITA",
-  "Canadá": "CAN",
-  "España": "ESP",
-  "Corea del Sur": "KOR",
-  "Arabia Saudita": "SAU",
-  "Turquía": "TUR",
-  "Sudáfrica": "ZAF",
-  "Egipto": "EGY",
-  "Marruecos": "MAR",
-  "Tailandia": "THA",
-  "Pakistán": "PAK",
-  "Suecia": "SWE",
-  "Noruega": "NOR",
-  "Suiza": "CHE",
-  "Grecia": "GRC",
-  "Polonia": "POL",
-  "Ucrania": "UKR",
-  "Filipinas": "PHL"
-};
-
-function formatNumber(value, digits = 1) {
-  return new Intl.NumberFormat("es-CL", {
-    minimumFractionDigits: digits,
-    maximumFractionDigits: digits
-  }).format(value);
-}
-
-fetch("datos/datos_limpios.json")
+fetch("datos/datos_a_utilizar.json")
   .then(response => {
     if (!response.ok) {
-      throw new Error("No se pudo cargar datos/datos_limpios.json");
+      throw new Error("No se pudo cargar el archivo datos/datos_a_utilizar.json");
     }
     return response.json();
   })
-  .then(datos => {
-    const normalizados = datos
-      .map(d => ({
-        pais: d["País"],
-        sedan: d["Sedán Más Vendido (Combustión)"],
-        consumo: Number(d["Consumo Mixto Aprox."]),
-        precioLitro: Number(d["Precio Aprox. Litro Gasolina (USD)"]),
-        litros50: Number(d["Litros cargados con 50 dolares"]),
-        kilometros50: Number(d["Kilometros cargados con 50 dolares"]),
-        iso_alpha: d.iso_alpha || isoFallback[d["País"]] || null
-      }))
-      .filter(d => d.iso_alpha && !Number.isNaN(d.kilometros50));
+  .then(data => {
+    const select = document.getElementById("continenteSelect");
+    const topMejores = document.getElementById("topMejores");
+    const topPeores = document.getElementById("topPeores");
+    const lecturaGeneral = document.getElementById("lecturaGeneral");
 
-    if (!normalizados.length) {
-      throw new Error("No hay países válidos con código ISO-3 para graficar.");
+    const datosValidos = data.filter(d =>
+      d["País"] &&
+      d["Continente"] &&
+      d["Categoria"] &&
+      d["Kilometros cargados con 50 dolares"] != null &&
+      !Number.isNaN(Number(d["Kilometros cargados con 50 dolares"]))
+    );
+
+    const continentes = [...new Set(datosValidos.map(d => d["Continente"]))].sort();
+
+    continentes.forEach(cont => {
+      const option = document.createElement("option");
+      option.value = cont;
+      option.textContent = cont;
+      select.appendChild(option);
+    });
+
+    function crearGrafico(datos) {
+      const ordenados = [...datos].sort(
+        (a, b) => Number(b["Kilometros cargados con 50 dolares"]) - Number(a["Kilometros cargados con 50 dolares"])
+      );
+
+      const x = ordenados.map(d => d["País"]);
+      const y = ordenados.map(d => Number(d["Kilometros cargados con 50 dolares"]));
+      const colores = ordenados.map(d =>
+        d["Categoria"] === "Top 2" ? "#16a34a" : "#dc2626"
+      );
+
+      const textos = ordenados.map(d =>
+        `${d["País"]}<br>${d["Categoria"]}<br>${Number(d["Kilometros cargados con 50 dolares"]).toFixed(2)} km`
+      );
+
+      const trace = {
+        x: x,
+        y: y,
+        type: "bar",
+        marker: { color: colores },
+        text: textos,
+        hovertemplate: "%{text}<extra></extra>"
+      };
+
+      const layout = {
+        title: "Kilómetros recorridos con 50 USD",
+        xaxis: { title: "País" },
+        yaxis: { title: "Kilómetros" },
+        margin: { t: 60, r: 20, b: 80, l: 60 }
+      };
+
+      Plotly.newPlot("graficoBarras", [trace], layout, { responsive: true });
     }
 
-    const ordenados = [...normalizados].sort((a, b) => b.kilometros50 - a.kilometros50);
-    const mejor = ordenados[0];
-    const promedio =
-      normalizados.reduce((acc, d) => acc + d.kilometros50, 0) / normalizados.length;
+    function crearRanking(datosBase) {
+      const ordenados = [...datosBase].sort(
+        (a, b) => Number(b["Kilometros cargados con 50 dolares"]) - Number(a["Kilometros cargados con 50 dolares"])
+      );
 
-    document.getElementById("total-paises").textContent = normalizados.length;
-    document.getElementById("mejor-pais").textContent =
-      `${mejor.pais} (${formatNumber(mejor.kilometros50, 0)} km)`;
-    document.getElementById("promedio-km").textContent =
-      `${formatNumber(promedio, 0)} km`;
+      const mejores = ordenados.slice(0, 5);
+      const peores = ordenados.slice(-5).reverse();
 
-    document.getElementById("top-list").innerHTML = ordenados
-      .slice(0, 5)
-      .map(d => `<li><strong>${d.pais}</strong>: ${formatNumber(d.kilometros50, 0)} km</li>`)
-      .join("");
+      topMejores.innerHTML = mejores
+        .map(d => `<li><strong>${d["País"]}</strong>: ${Number(d["Kilometros cargados con 50 dolares"]).toFixed(2)} km</li>`)
+        .join("");
 
-    const trace = {
-      type: "choropleth",
-      locationmode: "ISO-3",
-      locations: normalizados.map(d => d.iso_alpha),
-      z: normalizados.map(d => d.kilometros50),
-      text: normalizados.map(d => d.pais),
-      customdata: normalizados.map(d => [
-        d.sedan,
-        d.consumo,
-        d.precioLitro,
-        d.litros50,
-        d.kilometros50
-      ]),
-      colorscale: "Blues",
-      reversescale: false,
-      colorbar: {
-        title: "Km con 50 USD",
-        tickfont: { color: "#e2e8f0" },
-        titlefont: { color: "#e2e8f0" }
-      },
-      marker: {
-        line: {
-          color: "rgba(255,255,255,0.5)",
-          width: 0.5
-        }
-      },
-      hovertemplate:
-        "<b>%{text}</b><br>" +
-        "Sedán más vendido: %{customdata[0]}<br>" +
-        "Consumo mixto aprox.: %{customdata[1]:.1f} km/L<br>" +
-        "Precio litro gasolina: USD %{customdata[2]:.2f}<br>" +
-        "Litros con 50 USD: %{customdata[3]:.1f} L<br>" +
-        "<b>Kilómetros con 50 USD: %{customdata[4]:.0f} km</b>" +
-        "<extra></extra>"
-    };
+      topPeores.innerHTML = peores
+        .map(d => `<li><strong>${d["País"]}</strong>: ${Number(d["Kilometros cargados con 50 dolares"]).toFixed(2)} km</li>`)
+        .join("");
+    }
 
-    const layout = {
-      paper_bgcolor: "rgba(0,0,0,0)",
-      plot_bgcolor: "rgba(0,0,0,0)",
-      margin: { t: 10, r: 10, b: 10, l: 10 },
-      geo: {
-        scope: "world",
-        projection: { type: "natural earth" },
-        bgcolor: "rgba(0,0,0,0)",
-        showframe: false,
-        showcoastlines: true,
-        coastlinecolor: "#94a3b8",
-        showcountries: true,
-        countrycolor: "#475569",
-        showland: true,
-        landcolor: "#1e293b",
-        lakecolor: "#0f172a",
-        showlakes: true
-      },
-      font: {
-        color: "#f8fafc"
+    function actualizarLectura(datos) {
+      if (!datos.length) {
+        lecturaGeneral.textContent = "No hay datos disponibles para este continente.";
+        return;
       }
-    };
 
-    Plotly.newPlot("mapa", [trace], layout, {
-      responsive: true,
-      displayModeBar: true
+      const ordenados = [...datos].sort(
+        (a, b) => Number(b["Kilometros cargados con 50 dolares"]) - Number(a["Kilometros cargados con 50 dolares"])
+      );
+
+      const mejor = ordenados[0];
+      const peor = ordenados[ordenados.length - 1];
+
+      lecturaGeneral.textContent =
+        `En esta selección, el país con mejor rendimiento es ${mejor["País"]}, mientras que el de menor rendimiento es ${peor["País"]}. ` +
+        `Esto evidencia diferencias importantes en la relación entre precio del combustible y eficiencia del vehículo.`;
+    }
+
+    function actualizarVista(continente) {
+      let datosGrafico = datosValidos;
+
+      if (continente !== "Todos") {
+        datosGrafico = datosValidos.filter(d => d["Continente"] === continente);
+      }
+
+      crearGrafico(datosGrafico);
+      crearRanking(datosValidos);
+      actualizarLectura(datosGrafico);
+    }
+
+    select.addEventListener("change", e => {
+      actualizarVista(e.target.value);
     });
+
+    actualizarVista("Todos");
   })
   .catch(error => {
     console.error(error);
-    document.getElementById("mapa").innerHTML = `<div class="error">${error.message}</div>`;
+    document.getElementById("graficoBarras").innerHTML =
+      `<div class="error">${error.message}</div>`;
   });
