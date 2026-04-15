@@ -1,54 +1,103 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mapa interactivo con Plotly</title>
+fetch("datos_filtrados.json")
+    .then(response => response.json())
+    .then(data => {
+        const select = document.getElementById("continenteSelect");
 
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-</head>
-<body>
-  <header>
-    <h1>Mapa mundial de rendimiento con 50 USD</h1>
-    <p class="subtitle">
-      Cada país se colorea según cuántos kilómetros puede recorrer el sedán más vendido con 50 dólares de gasolina.
-      Pasa el cursor sobre cada país para ver el modelo, el consumo y el rendimiento estimado.
-    </p>
-  </header>
+        function getContinente(pais) {
+            const mapa = {
+                "Chile": "América",
+                "Argentina": "América",
+                "Brasil": "América",
+                "Estados Unidos": "América",
+                "Canadá": "América",
+                "Alemania": "Europa",
+                "Francia": "Europa",
+                "España": "Europa",
+                "Italia": "Europa",
+                "China": "Asia",
+                "India": "Asia",
+                "Japón": "Asia",
+                "Australia": "Oceanía",
+                "Sudáfrica": "África",
+                "Egipto": "África"
+            };
 
-  <main class="dashboard">
-    <section class="card">
-      <div id="mapa"></div>
-    </section>
+            return mapa[pais] || "Otro";
+        }
 
-    <aside class="card sidebar">
-      <div class="metric">
-        <div class="metric-label">Países representados</div>
-        <div class="metric-value" id="total-paises">--</div>
-      </div>
+        data.forEach(d => {
+            d.Continente = getContinente(d["País"]);
+        });
 
-      <div class="metric">
-        <div class="metric-label">Mayor rendimiento</div>
-        <div class="metric-value" id="mejor-pais">--</div>
-      </div>
+        function actualizarVista(continente) {
+            let filtrado = data;
 
-      <div class="metric">
-        <div class="metric-label">Promedio de kilómetros con 50 USD</div>
-        <div class="metric-value" id="promedio-km">--</div>
-      </div>
+            if (continente !== "Todos") {
+                filtrado = data.filter(
+                    d => d.Continente === continente
+                );
+            }
 
-      <div class="metric ranking">
-        <h2>Top 5 países</h2>
-        <ol class="ranking-list" id="top-list"></ol>
-      </div>
+            crearGrafico(filtrado);
+            crearRanking(filtrado);
+        }
 
-      <div class="note">
-        Consejo: si un país no tenía código ISO-3 en tu JSON, se completa automáticamente para que el mapa lo pueda dibujar.
-      </div>
-    </aside>
-  </main>
+        function crearGrafico(datos) {
+            const x = datos.map(d => d["País"]);
+            const y = datos.map(
+                d => d["Kilometros cargados con 50 dolares"]
+            );
 
-  <script src="script.js"></script>
-</body>
-</html>
+            const colores = y.map(valor =>
+                valor >= 800 ? "#16a34a" : "#dc2626"
+            );
+
+            const trace = {
+                x: x,
+                y: y,
+                type: "bar",
+                marker: {
+                    color: colores
+                }
+            };
+
+            const layout = {
+                title: "Kilómetros recorridos con 50 USD",
+                xaxis: { title: "País" },
+                yaxis: { title: "Kilómetros" }
+            };
+
+            Plotly.newPlot("graficoBarras", [trace], layout);
+        }
+
+        function crearRanking(datos) {
+            const ordenados = [...datos].sort(
+                (a, b) =>
+                    b["Kilometros cargados con 50 dolares"] -
+                    a["Kilometros cargados con 50 dolares"]
+            );
+
+            const mejores = ordenados.slice(0, 5);
+            const peores = ordenados.slice(-5).reverse();
+
+            document.getElementById("topMejores").innerHTML =
+                mejores
+                    .map(d =>
+                        `<li>${d["País"]}: ${d["Kilometros cargados con 50 dolares"].toFixed(1)} km</li>`
+                    )
+                    .join("");
+
+            document.getElementById("topPeores").innerHTML =
+                peores
+                    .map(d =>
+                        `<li>${d["País"]}: ${d["Kilometros cargados con 50 dolares"].toFixed(1)} km</li>`
+                    )
+                    .join("");
+        }
+
+        select.addEventListener("change", e => {
+            actualizarVista(e.target.value);
+        });
+
+        actualizarVista("Todos");
+    });
