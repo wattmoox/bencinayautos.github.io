@@ -7,7 +7,7 @@ body {
   background: #f5f7fa;
   color: #222;
 }
-
+/*  encabezado de la pagina*/
 .hero {
   text-align: center;
   padding: 40px 20px;
@@ -71,7 +71,7 @@ body {
   border-radius: 4px;
   display: inline-block;
 }
-
+/* Colores para cada continente */
 .america { background: #2563eb; }
 .europa { background: #7c3aed; }
 .asia { background: #f59e0b; }

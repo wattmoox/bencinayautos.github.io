@@ -14,9 +14,9 @@ function crearGrafico(datos) {
     "Maruti Suzuki Dzire": "img/autos/maruti_suzuki_dzire.png",
     "Toyota Corolla": "img/autos/toyota_corolla.png",
     "Skoda Octavia": "img/autos/skoda_octavia.png",
-    "Dacia Logan": "img/autos/dacia_logan.png",
-    "Volkswagen Polo Sedan": "img/autos/volkswagen_polo_sedan.png",
-    "Mercedes Benz Class E": "img/autos/mercedes_benz_class_e.png",
+    "Dacia Logan": "img/autos/renault_dacia_logan.png",
+    "Volkswagen Polo Sedan": "img/autos/volkswagen_polo.png",
+    "Mercedes Benz Class E": "img/autos/mercedes_benz_clase_e.png",
     "Hyundai Grandeur": "img/autos/hyundai_grandeur.png",
     "Toyota Camry": "img/autos/toyota_camry.png",
     "Nissan Sylphy": "img/autos/nissan_sylphy.png"
