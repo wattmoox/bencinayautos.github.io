@@ -1,152 +1,166 @@
-fetch("datos/datos_a_utilizar.json?v=5")
-  .then(response => {
-    if (!response.ok) {
-      throw new Error("No se pudo cargar el archivo datos/datos_a_utilizar.json");
+function crearGrafico(datos) {
+  const paises = datos.map(d => d["País"]);
+  const km = datos.map(d => Number(d["Kilometros cargados con 50 dolares"]));
+  const autos = datos.map(d => d["Sedán Más Vendido (Combustión)"]);
+  const colores = datos.map(d => coloresContinente[d["Continente"]] || "#64748b");
+
+  const maxKm = Math.max(...km);
+
+  const imagenesAutos = {
+    "Suzuki Dzire": "img/autos/suzuki_dzire.png",
+    "Kia Soluto": "img/autos/kia_soluto.png",
+    "Nissan Versa": "img/autos/nissan_versa.png",
+    "Chevrolet Onix Plus": "img/autos/chevrolet_onix_plus.png",
+    "Maruti Suzuki Dzire": "img/autos/maruti_suzuki_dzire.png",
+    "Toyota Corolla": "img/autos/toyota_corolla.png",
+    "Skoda Octavia": "img/autos/skoda_octavia.png",
+    "Dacia Logan": "img/autos/dacia_logan.png",
+    "Volkswagen Polo Sedan": "img/autos/volkswagen_polo_sedan.png",
+    "Mercedes Benz Class E": "img/autos/mercedes_benz_class_e.png",
+    "Hyundai Grandeur": "img/autos/hyundai_grandeur.png",
+    "Toyota Camry": "img/autos/toyota_camry.png",
+    "Nissan Sylphy": "img/autos/nissan_sylphy.png"
+  };
+
+  const mejor = datos.reduce((acc, d) =>
+    Number(d["Kilometros cargados con 50 dolares"]) > Number(acc["Kilometros cargados con 50 dolares"]) ? d : acc
+  );
+
+  const peor = datos.reduce((acc, d) =>
+    Number(d["Kilometros cargados con 50 dolares"]) < Number(acc["Kilometros cargados con 50 dolares"]) ? d : acc
+  );
+
+  const traceBarras = {
+    x: km,
+    y: paises,
+    orientation: "h",
+    type: "bar",
+    width: 0.70,
+    marker: {
+      color: colores
+    },
+    hovertemplate:
+      "<b>%{y}</b><br>" +
+      "Km con 50 USD: %{x:.1f}<br>" +
+      "<extra></extra>"
+  };
+
+  const traceKm = {
+    x: km.map(v => v + 25),
+    y: paises,
+    mode: "text",
+    text: km.map(v => `${v.toFixed(1)} km`),
+    textposition: "middle right",
+    textfont: {
+      color: "#1f2937",
+      size: 13
+    },
+    hoverinfo: "skip",
+    showlegend: false
+  };
+
+  const anotacionesModelos = datos.map((d, i) => ({
+    x: Math.max(km[i] * 0.38, 90),
+    y: paises[i],
+    xref: "x",
+    yref: "y",
+    text: `<b>${d["Sedán Más Vendido (Combustión)"]}</b>`,
+    showarrow: false,
+    font: {
+      color: "white",
+      size: 16
+    },
+    align: "center"
+  }));
+
+  const anotacionesEspeciales = [
+    {
+      x: km[indiceMejor],
+      y: paises[indiceMejor],
+      xref: "x",
+      yref: "y",
+      text: `<b>Dato interesante</b><br>${mejor["País"]} logra el mayor recorrido con ${km[indiceMejor].toFixed(1)} km.`,
+      showarrow: true,
+      arrowhead: 2,
+      ax: -180,
+      ay: -60,
+      arrowwidth: 2,
+      arrowsize: 1,
+      bgcolor: "rgba(255,255,255,0.95)",
+      bordercolor: coloresContinente[mejor["Continente"]] || "#111827",
+      borderwidth: 1,
+      font: {
+        size: 12,
+        color: "#111827"
+      },
+      align: "left"
+    },
+    {
+      x: km[indicePeor],
+      y: paises[indicePeor],
+      xref: "x",
+      yref: "y",
+      text: `<b>Dato interesante</b><br>${peor["País"]} presenta el menor rendimiento del conjunto.`,
+      showarrow: true,
+      arrowhead: 2,
+      ax: 170,
+      ay: 45,
+      arrowwidth: 2,
+      arrowsize: 1,
+      bgcolor: "rgba(255,255,255,0.95)",
+      bordercolor: coloresContinente[peor["Continente"]] || "#111827",
+      borderwidth: 1,
+      font: {
+        size: 12,
+        color: "#111827"
+      },
+      align: "left"
     }
-    return response.json();
-  })
-  .then(data => {
-    const topMejores = document.getElementById("topMejores");
-    const topPeores = document.getElementById("topPeores");
-    const lecturaGeneral = document.getElementById("lecturaGeneral");
+  ];
 
-    const datosValidos = data.filter(d =>
-      d["País"] &&
-      d["Continente"] &&
-      d["Kilometros cargados con 50 dolares"] != null &&
-      !Number.isNaN(Number(d["Kilometros cargados con 50 dolares"]))
-    );
-    // Definimos colores para cada continente
-    const coloresContinente = {
-      "América": "#2563eb",
-      "Europa": "#7c3aed",
-      "Asia": "#f59e0b",
-      "África": "#16a34a",
-      "Oceanía": "#ef4444"
-    };
+  const imagenesDentroBarras = datos
+    .filter(d => imagenesAutos[d["Sedán Más Vendido (Combustión)"]])
+    .map((d, i) => ({
+      source: imagenesAutos[d["Sedán Más Vendido (Combustión)"]],
+      xref: "x",
+      yref: "y",
+      x: Math.max(km[i] - maxKm * 0.08, km[i] * 0.78),
+      y: paises[i],
+      sizex: maxKm * 0.11,
+      sizey: 0.52,
+      xanchor: "center",
+      yanchor: "middle",
+      sizing: "contain",
+      opacity: 1,
+      layer: "above"
+    }));
 
-    function obtenerSeleccionGrafico(datos) {
-      const continentes = [...new Set(datos.map(d => d["Continente"]))];
-      const resultado = [];
-
-      continentes.forEach(cont => {
-        const grupo = datos
-          .filter(d => d["Continente"] === cont)
-          .sort(
-            (a, b) =>
-              Number(b["Kilometros cargados con 50 dolares"]) -
-              Number(a["Kilometros cargados con 50 dolares"])
-          );
-
-        if (grupo.length <= 4) {
-          resultado.push(...grupo);
-        } else {
-          const mejores = grupo.slice(0, 2);
-          const peores = grupo.slice(-2);
-          resultado.push(...mejores, ...peores);
-        }
-      });
-
-      return resultado.sort(
-        (a, b) =>
-          Number(b["Kilometros cargados con 50 dolares"]) -
-          Number(a["Kilometros cargados con 50 dolares"])
-      );
-    }
-
-    function crearGrafico(datos) {
-      const x = datos.map(d => d["País"]);
-      const y = datos.map(d => Number(d["Kilometros cargados con 50 dolares"]));
-      const colores = datos.map(d => coloresContinente[d["Continente"]] || "#64748b");
-      const textos = y.map(valor => `${valor.toFixed(1)} km`);
-
-      const trace = {
-        x: x,
-        y: y,
-        type: "bar",
-        marker: {
-          color: colores
-        },
-        text: textos,
-        textposition: "outside",
-        cliponaxis: false,
-        hovertemplate:
-          "<b>%{x}</b><br>" +
-          "Km con 50 USD: %{y:.1f}<br>" +
-          "<extra></extra>"
-      };
-
-      const layout = {
-        title: "",
-        xaxis: {
-          title: "País",
-          tickangle: 0,
-          automargin: true
-        },
-        yaxis: {
-          title: "Kilómetros recorridos con 50 USD",
-          automargin: true
-        },
-        margin: { t: 40, r: 20, b: 100, l: 80 },
-        showlegend: false
-      };
-
-      Plotly.newPlot("graficoBarras", [trace], layout, {
-        responsive: true,
-        displayModeBar: false
-      });
-    }
-
-    function crearRanking(datosBase) {
-      const ordenados = [...datosBase].sort(
-        (a, b) =>
-          Number(b["Kilometros cargados con 50 dolares"]) -
-          Number(a["Kilometros cargados con 50 dolares"])
-      );
-
-      const mejores = ordenados.slice(0, 5);
-      const peores = [...ordenados].slice(-5).reverse();
-
-      topMejores.innerHTML = mejores
-        .map(d =>
-          `<li><strong>${d["País"]}</strong>: ${Number(d["Kilometros cargados con 50 dolares"]).toFixed(1)} km</li>`
-        )
-        .join("");
-
-      topPeores.innerHTML = peores
-        .map(d =>
-          `<li><strong>${d["País"]}</strong>: ${Number(d["Kilometros cargados con 50 dolares"]).toFixed(1)} km</li>`
-        )
-        .join("");
-    }
-
-    function actualizarLectura(datos) {
-      if (!datos.length) {
-        lecturaGeneral.textContent = "No hay datos disponibles para generar la lectura general.";
-        return;
+  const layout = {
+    xaxis: {
+      showgrid: false,
+      showticklabels: false,
+      zeroline: false,
+      title: "",
+      range: [0, maxKm * 1.2]
+    },
+    yaxis: {
+      title: "",
+      automargin: true,
+      tickfont: {
+        size: 13
       }
+    },
+    margin: { t: 70, r: 130, b: 30, l: 150 },
+    showlegend: false,
+    height: 720,
+    plot_bgcolor: "white",
+    paper_bgcolor: "white",
+    annotations: [...anotacionesModelos, ...anotacionesEspeciales],
+    images: imagenesDentroBarras
+  };
 
-      const ordenados = [...datos].sort(
-        (a, b) =>
-          Number(b["Kilometros cargados con 50 dolares"]) -
-          Number(a["Kilometros cargados con 50 dolares"])
-      );
-
-      const mejor = ordenados[0];
-      const peor = ordenados[ordenados.length - 1];
-      
-      // Redactamos la lectura general utilizando los datos del mejor y peor país
-      lecturaGeneral.textContent =
-        `Dentro de los países seleccionados para la comparación, ${mejor["País"]} presenta el mayor rendimiento con ${Number(mejor["Kilometros cargados con 50 dolares"]).toFixed(1)} km recorridos con 50 USD, mientras que ${peor["País"]} muestra el menor rendimiento con ${Number(peor["Kilometros cargados con 50 dolares"]).toFixed(1)} km.`;
-    }
-
-    const datosGrafico = obtenerSeleccionGrafico(datosValidos);
-    crearGrafico(datosGrafico);
-    crearRanking(datosValidos);
-    actualizarLectura(datosGrafico);
-  })
-  .catch(error => {
-    console.error(error);
-    document.getElementById("graficoBarras").innerHTML =
-      `<div class="error">${error.message}</div>`;
+  Plotly.newPlot("graficoBarras", [traceBarras, traceKm], layout, {
+    responsive: true,
+    displayModeBar: false
   });
+}
