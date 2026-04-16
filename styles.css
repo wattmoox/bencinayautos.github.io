@@ -1,61 +1,139 @@
+/* =========================================
+   ESTILOS GENERALES DE TODA LA PÁGINA
+   =========================================
+   Esta sección define la apariencia base del sitio:
+   tipografía, márgenes externos, color de fondo
+   general y color base del texto.
+========================================= */
 body {
+  /* Fuente principal usada en toda la página */
   font-family: Arial, sans-serif;
+
+  /* Elimina márgenes automáticos del navegador */
   margin: 0;
+
+  /* Color de fondo general del sitio */
   background: #f5f7fa;
+
+  /* Color por defecto para textos */
   color: #222;
 }
 
+
+/* =========================================
+   SECCIÓN HERO / ENCABEZADO PRINCIPAL
+   =========================================
+   Esta es la primera sección visible de la página.
+   Generalmente contiene el título principal
+   y la explicación del proyecto.
+========================================= */
 .hero {
+  /* Centra horizontalmente el contenido */
   text-align: center;
+
+  /* Espaciado interno arriba/abajo y lados */
   padding: 40px 20px;
+
+  /* Fondo azul principal del encabezado */
   background: #1e3a8a;
+
+  /* Texto blanco para contraste */
   color: white;
 }
 
+/* TÍTULO PRINCIPAL DEL HERO */
 .hero h1 {
+  /* Separación entre título y subtítulo */
   margin-bottom: 10px;
+
+  /* Tamaño grande del título */
   font-size: 2rem;
 }
 
+/* PÁRRAFO DESCRIPTIVO DEL HERO */
 .hero p {
+  /* Limita el ancho para mejorar lectura */
   max-width: 850px;
+
+  /* Centra el bloque del texto */
   margin: 0 auto;
+
+  /* Espaciado entre líneas */
   line-height: 1.6;
 }
 
+
+/* =========================================
+   CONTENEDOR PRINCIPAL DEL CONTENIDO
+   =========================================
+   Define el ancho máximo de toda la página
+   para que no ocupe el 100% de pantallas grandes.
+========================================= */
 .contenedor {
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
 }
 
+
+/* =========================================
+   SECCIÓN DEL GRÁFICO PRINCIPAL
+   =========================================
+   Caja blanca donde se muestra el gráfico
+   de barras por país.
+========================================= */
 .grafico-section {
   background: white;
   padding: 24px;
+
+  /* Bordes redondeados modernos */
   border-radius: 14px;
+
+  /* Sombra suave tipo tarjeta */
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+
+  /* Separación vertical con otras secciones */
   margin: 30px 0;
 }
 
+/* ÁREA DONDE PLOTLY DIBUJA EL GRÁFICO */
 #graficoBarras {
+  /* Altura del gráfico */
   height: 620px;
 }
 
+
+/* =========================================
+   LEYENDA DE COLORES POR CONTINENTE
+   =========================================
+   Muestra el significado de cada color
+   usado en las barras del gráfico.
+========================================= */
 .leyenda {
   display: flex;
+
+  /* Permite que pase a otra fila */
   flex-wrap: wrap;
+
+  /* Espacio entre elementos */
   gap: 14px 22px;
+
   margin-top: 18px;
+
+  /* Centrado horizontal */
   justify-content: center;
+
   font-size: 0.95rem;
 }
 
+/* CADA ELEMENTO INDIVIDUAL DE LA LEYENDA */
 .leyenda-item {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
+/* CUADRADO DE COLOR DE LA LEYENDA */
 .color-box {
   width: 16px;
   height: 16px;
@@ -63,19 +141,36 @@ body {
   display: inline-block;
 }
 
+
+/* =========================================
+   COLORES ASIGNADOS A CADA CONTINENTE
+   =========================================
+   Estos colores se reutilizan tanto
+   en la leyenda como en el gráfico.
+========================================= */
 .america { background: #2563eb; }
 .europa { background: #7c3aed; }
 .asia { background: #f59e0b; }
 .africa { background: #16a34a; }
 .oceania { background: #ef4444; }
 
+
+/* =========================================
+   CONTENEDOR DE RANKINGS
+   =========================================
+   Zona donde muestras mejores y peores países
+   o rankings por continente.
+========================================= */
 .ranking-container {
   display: flex;
   gap: 20px;
   margin-bottom: 30px;
+
+  /* Permite adaptación a pantallas pequeñas */
   flex-wrap: wrap;
 }
 
+/* CADA TARJETA DEL RANKING */
 .ranking-box {
   flex: 1;
   min-width: 280px;
@@ -85,15 +180,23 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
+/* LISTAS DENTRO DEL RANKING */
 .ranking-box ul {
   padding-left: 20px;
 }
 
+/* CADA ELEMENTO DE LA LISTA */
 .ranking-box li {
   margin-bottom: 10px;
   line-height: 1.5;
 }
 
+
+/* =========================================
+   SECCIÓN DE CONCLUSIONES FINALES
+   =========================================
+   Caja destinada al análisis final del proyecto.
+========================================= */
 .conclusiones {
   background: white;
   padding: 24px;
@@ -102,6 +205,13 @@ body {
   margin-bottom: 40px;
 }
 
+
+/* =========================================
+   MENSAJES DE ERROR
+   =========================================
+   Caja visual para errores al cargar datos
+   o problemas con archivos.
+========================================= */
 .error {
   padding: 16px;
   background: #fee2e2;
@@ -110,11 +220,21 @@ body {
   font-weight: bold;
 }
 
+
+/* =========================================
+   DISEÑO RESPONSIVE PARA CELULARES
+   =========================================
+   Ajustes automáticos cuando la pantalla
+   es menor a 768px.
+========================================= */
 @media (max-width: 768px) {
+
+  /* Reducir tamaño del título */
   .hero h1 {
     font-size: 1.5rem;
   }
 
+  /* Reducir altura del gráfico */
   #graficoBarras {
     height: 520px;
   }

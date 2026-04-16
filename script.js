@@ -16,7 +16,7 @@ fetch("datos/datos_a_utilizar.json?v=5")
       d["Kilometros cargados con 50 dolares"] != null &&
       !Number.isNaN(Number(d["Kilometros cargados con 50 dolares"]))
     );
-
+    // Definimos colores para cada continente
     const coloresContinente = {
       "América": "#2563eb",
       "Europa": "#7c3aed",
@@ -134,7 +134,8 @@ fetch("datos/datos_a_utilizar.json?v=5")
 
       const mejor = ordenados[0];
       const peor = ordenados[ordenados.length - 1];
-
+      
+      // Redactamos la lectura general utilizando los datos del mejor y peor país
       lecturaGeneral.textContent =
         `Dentro de los países seleccionados para la comparación, ${mejor["País"]} presenta el mayor rendimiento con ${Number(mejor["Kilometros cargados con 50 dolares"]).toFixed(1)} km recorridos con 50 USD, mientras que ${peor["País"]} muestra el menor rendimiento con ${Number(peor["Kilometros cargados con 50 dolares"]).toFixed(1)} km.`;
     }
