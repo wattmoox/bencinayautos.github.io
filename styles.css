@@ -7,14 +7,14 @@ body {
   background: #f5f7fa;
   color: #222;
 }
-/*  encabezado de la pagina*/
+
+/* encabezado de la pagina */
 .hero {
   text-align: center;
   padding: 40px 20px;
   background: #1e3a8a;
   color: white;
 }
-
 .hero h1 {
   margin-bottom: 10px;
   font-size: 2rem;
@@ -44,7 +44,7 @@ body {
 }
 
 #graficoBarras {
-  height: 820px;
+  height: 920px;
 }
 
 /* =========================
@@ -54,30 +54,35 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 14px 22px;
-  margin-top: 18px;
+  margin-top: 28px;
   justify-content: center;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  background: #f8fafc;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
 }
 
 .leyenda-item {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-weight: 600;
 }
 
 .color-box {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 4px;
   display: inline-block;
 }
-/* Colores para cada continente */
-.america { background: #2563eb; }
-.europa { background: #7c3aed; }
-.asia { background: #f59e0b; }
-.africa { background: #16a34a; }
-.oceania { background: #ef4444; }
 
+/* Colores para cada continente */
+.america { background: #31ED31; }
+.europa { background: #31ED8F; }
+.asia { background: #31EDED; }
+.africa { background: #ED31ED; }
+.oceania { background: #ED3131; }
 
 /* =========================
    RESPONSIVE
@@ -88,6 +93,16 @@ body {
   }
 
   #graficoBarras {
-    height: 700px;
+    height: 760px;
+  }
+
+  .leyenda {
+    font-size: 0.95rem;
+    padding: 12px 14px;
+  }
+
+  .color-box {
+    width: 16px;
+    height: 16px;
   }
 }
