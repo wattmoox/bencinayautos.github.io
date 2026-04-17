@@ -181,7 +181,7 @@ fetch("datos/datos_a_utilizar.json?v=11")
           xref: "x",
           yref: "y",
           // Texto de Hong Kong
-          text: `<b>Dato interesante</b><br>${peor["País"]} logra el peor rendimmiento gracias la poca eficiencia de su auto prommedio (14km/L) y el altísimo valor de la bencina ($4.135/L)`,
+          text: `<b>Dato interesante</b><br>${peor["País"]} logra el peor rendimmiento gracias a la poca eficiencia de su auto promedio (14km/L) y el altísimo valor de la bencina ($4.135/L)`,
           showarrow: true,
           arrowhead: 2,
           ax: 170,
