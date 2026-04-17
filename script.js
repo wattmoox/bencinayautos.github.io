@@ -159,7 +159,7 @@ fetch("datos/datos_a_utilizar.json?v=11")
           xref: "x",
           yref: "y",
           // Texto del dato India
-          text: `<b>Dato interesante</b><br>${mejor["País"]} logra el mayor recorrido con ${kmReal[indiceMejor].toFixed(1)} km.`,
+          text: `<b>Dato interesante</b><br>${mejor["País"]} logra el mayor recorrido gracias a la eficiencia de su auto promedio (22km/L) y el bajo costo de la bencina ($1.085/L)`,
           showarrow: true,
           arrowhead: 2,
           ax: -180,
@@ -181,7 +181,7 @@ fetch("datos/datos_a_utilizar.json?v=11")
           xref: "x",
           yref: "y",
           // Texto de Hong Kong
-          text: `<b>Dato interesante</b><br>${peor["País"]} presenta el menor rendimiento del conjunto.`,
+          text: `<b>Dato interesante</b><br>${peor["País"]} logra el peor rendimmiento gracias la poca eficiencia de su auto prommedio (14km/L) y el altísimo valor de la bencina ($4.135/L)`,
           showarrow: true,
           arrowhead: 2,
           ax: 170,
