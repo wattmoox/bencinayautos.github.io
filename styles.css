@@ -8,28 +8,78 @@ body {
   color: #222;
 }
 
-/* encabezado de la pagina */
 .hero {
   text-align: center;
   padding: 40px 20px;
   background: #1e3a8a;
   color: white;
 }
+
 .hero h1 {
   margin-bottom: 10px;
-  font-size: 2rem;
+  font-size: 2.2rem;
 }
 
 .hero p {
   max-width: 850px;
   margin: 0 auto;
   line-height: 1.6;
+  font-size: 1.1rem;
 }
 
 .contenedor {
   width: 90%;
   max-width: 1200px;
   margin: 0 auto;
+}
+
+/* =========================
+   CONTROLES (INTERACCIÓN)
+========================= */
+.controles {
+  background: white;
+  padding: 20px 24px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: -20px auto 30px auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.control-group input[type="range"] {
+  width: 250px;
+  cursor: pointer;
+}
+
+.control-group select {
+  padding: 8px 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.instruccion-sonido {
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+  color: #1e3a8a;
+  background: #e0f2fe;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.95rem;
 }
 
 /* =========================
@@ -43,8 +93,13 @@ body {
   margin: 30px 0;
 }
 
+.grafico-section h2 {
+  text-align: center;
+  color: #333;
+}
+
 #graficoBarras {
-  height: 920px;
+  height: 800px;
 }
 
 /* =========================
@@ -77,32 +132,14 @@ body {
   display: inline-block;
 }
 
-/* Colores para cada continente */
 .america { background: #31ED31; }
 .europa { background: #31ED8F; }
 .asia { background: #31EDED; }
 .africa { background: #ED31ED; }
 .oceania { background: #ED3131; }
 
-/* =========================
-   RESPONSIVE
-========================= */
 @media (max-width: 768px) {
-  .hero h1 {
-    font-size: 1.5rem;
-  }
-
-  #graficoBarras {
-    height: 760px;
-  }
-
-  .leyenda {
-    font-size: 0.95rem;
-    padding: 12px 14px;
-  }
-
-  .color-box {
-    width: 16px;
-    height: 16px;
-  }
+  .hero h1 { font-size: 1.5rem; }
+  .control-group input[type="range"] { width: 100%; }
+  #graficoBarras { height: 600px; }
 }

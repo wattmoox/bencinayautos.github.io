@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infografía: Autos y Bencina</title>
+  <title>La Brecha de la Movilidad</title>
 
   <link rel="stylesheet" href="styles.css">
 
@@ -12,50 +12,53 @@
 <body>
 
   <header class="hero">
-
-    <h1>Relación entre eficiencia vehicular y precio de la gasolina</h1>
-
+    <h1>¿Qué tan lejos llegas según tu país?</h1>
     <p>
-
-      Esta infografía compara países según la cantidad de kilómetros que pueden recorrer
-      con 50 USD, considerando el sedán más vendido y el precio aproximado del litro de gasolina.
-      
+      Explora la brecha de movilidad. Ajusta tu presupuesto y descubre cuántos kilómetros 
+      puedes recorrer en el sedán más vendido de cada país considerando el precio local de la gasolina.
     </p>
   </header>
 
   <main class="contenedor">
+    
+    <section class="controles">
+      <div class="control-group">
+        <label for="presupuestoSlider">Presupuesto (USD): <span id="valorPresupuesto">$50</span></label>
+        <input type="range" id="presupuestoSlider" min="10" max="100" step="5" value="50">
+      </div>
+      
+      <div class="control-group">
+        <label for="continenteFilter">Filtrar por Continente:</label>
+        <select id="continenteFilter">
+          <option value="Todos">Todos los continentes</option>
+          <option value="América">América</option>
+          <option value="Europa">Europa</option>
+          <option value="Asia">Asia</option>
+          <option value="África">África</option>
+          <option value="Oceanía">Oceanía</option>
+        </select>
+      </div>
+
+      <div class="instruccion-sonido">
+        🔊 <b>Sonificación:</b> Haz <i>clic</i> en la barra de cualquier país para escuchar su rendimiento (Ritmo rápido = Mayor distancia).
+      </div>
+    </section>
 
     <section class="grafico-section">
-      <h2>La brecha global en el costo de movilidad</h2>
-
+      <h2 id="tituloGrafico">Kilómetros recorridos con 50 USD</h2>
       <div id="graficoBarras"></div>
 
       <div class="leyenda">
-        <div class="leyenda-item">
-          <span class="color-box america"></span>América
-        </div>
-
-        <div class="leyenda-item">
-          <span class="color-box europa"></span>Europa
-        </div>
-
-        <div class="leyenda-item">
-          <span class="color-box asia"></span>Asia
-        </div>
-
-        <div class="leyenda-item">
-          <span class="color-box africa"></span>África
-        </div>
-
-        <div class="leyenda-item">
-          <span class="color-box oceania"></span>Oceanía
-        </div>
+        <div class="leyenda-item"><span class="color-box america"></span>América</div>
+        <div class="leyenda-item"><span class="color-box europa"></span>Europa</div>
+        <div class="leyenda-item"><span class="color-box asia"></span>Asia</div>
+        <div class="leyenda-item"><span class="color-box africa"></span>África</div>
+        <div class="leyenda-item"><span class="color-box oceania"></span>Oceanía</div>
       </div>
     </section>
 
   </main>
 
   <script src="script.js"></script>
-
 </body>
 </html>
