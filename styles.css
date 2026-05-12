@@ -132,11 +132,11 @@ body {
   display: inline-block;
 }
 
-.america { background: #31ED31; }
-.europa { background: #31ED8F; }
-.asia { background: #31EDED; }
-.africa { background: #ED31ED; }
-.oceania { background: #ED3131; }
+.america { background: #2A9D8F; }
+.europa { background: #1D3557; }
+.asia { background: #E63946; }
+.africa { background: #F4A261; }
+.oceania { background: #00B4D8; }
 
 @media (max-width: 768px) {
   .hero h1 { font-size: 1.5rem; }

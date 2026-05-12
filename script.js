@@ -4,13 +4,13 @@ let continenteActual = "Todos";
 let audioCtx;
 let oscInterval;
 
-// Colores asignados a cada continente
+// Colores asignados a cada continente (Paleta conceptual recomendada)
 const coloresContinente = {
-  "América": "#31ED31",
-  "Europa": "#31ED8F",
-  "Asia": "#31EDED",
-  "África": "#ED31ED",
-  "Oceanía": "#ED3131"
+  "América": "#2A9D8F",
+  "Europa": "#1D3557",
+  "Asia": "#E63946",
+  "África": "#F4A261",
+  "Oceanía": "#00B4D8"
 };
 
 // Carga inicial
@@ -20,7 +20,7 @@ fetch("datos/datos_a_utilizar.json?v=11")
     return response.json();
   })
   .then(data => {
-    // Validar que existan los datos necesarios
+    // Validar que existan los datos necesarios para el análisis
     datosGlobales = data.filter(d =>
       d["País"] &&
       d["Continente"] &&
@@ -55,7 +55,7 @@ function configurarControles() {
 }
 
 function actualizarVisualizacion() {
-  // 1. Filtrar
+  // 1. Filtrar por continente
   let datosFiltrados = datosGlobales;
   if (continenteActual !== "Todos") {
     datosFiltrados = datosGlobales.filter(d => d["Continente"] === continenteActual);
@@ -70,7 +70,7 @@ function actualizarVisualizacion() {
     return { ...d, kmDinamico: km };
   });
 
-  // 3. Ordenar de menor a mayor para que Plotly los dibuje bien
+  // 3. Ordenar de menor a mayor para una mejor jerarquía visual
   datosCalculados.sort((a, b) => a.kmDinamico - b.kmDinamico);
 
   crearGrafico(datosCalculados);
@@ -80,7 +80,27 @@ function crearGrafico(datos) {
   const paises = datos.map(d => d["País"]);
   const kmReal = datos.map(d => d.kmDinamico);
   const colores = datos.map(d => coloresContinente[d["Continente"]] || "#64748b");
-  const maxKm = Math.max(...kmReal, 1); // Evitar división por cero
+  const maxKm = Math.max(...kmReal, 1); 
+
+  // Generar los objetos de imagen para cada barra (Anclados a cada País)
+  const imagenesAutos = datos.map(d => {
+    const modelo = d["Sedán Más Vendido (Combustión)"];
+    
+    // Transformar "Nissan Versa" a "nissan_versa" para coincidir con tus archivos
+    let nombreArchivo = modelo.toLowerCase().trim().replace(/\s+/g, '_');
+    
+    return {
+      source: `img/autos/${nombreArchivo}.png`, 
+      xref: "x",
+      yref: "y",
+      x: d.kmDinamico + (maxKm * 0.01), 
+      y: d["País"],
+      sizex: maxKm * 0.08, 
+      sizey: 0.8, 
+      xanchor: "left",
+      yanchor: "middle"
+    };
+  });
 
   const traceBarras = {
     x: kmReal,
@@ -97,7 +117,8 @@ function crearGrafico(datos) {
   };
 
   const traceKm = {
-    x: kmReal.map(v => v + (maxKm * 0.05)), // Espaciado dinámico
+    // Aumentamos el desplazamiento (0.12) para que el texto aparezca después del auto
+    x: kmReal.map(v => v + (maxKm * 0.12)), 
     y: paises,
     mode: "text",
     text: kmReal.map(v => `${v.toFixed(1)} km`),
@@ -110,18 +131,20 @@ function crearGrafico(datos) {
   const layout = {
     xaxis: { showgrid: true, showticklabels: true, zeroline: true, rangemode: 'tozero' },
     yaxis: { automargin: true, tickfont: { size: 13 } },
-    margin: { t: 30, r: 80, b: 50, l: 150 },
+    // Aumentamos el margen derecho para evitar que las etiquetas se corten
+    margin: { t: 30, r: 150, b: 50, l: 150 }, 
     showlegend: false,
-    height: Math.max(400, datos.length * 40), // Altura dinámica según cantidad de barras
+    height: Math.max(400, datos.length * 40), 
     bargap: 0.15,
     plot_bgcolor: "white",
     paper_bgcolor: "white",
+    images: imagenesAutos // Inyección de las imágenes en el layout
   };
 
   Plotly.newPlot("graficoBarras", [traceBarras, traceKm], layout, { responsive: true, displayModeBar: false });
 
-  // 4. Agregar Sonificación por clic en Plotly
-  document.getElementById("graficoBarras").removeAllListeners('plotly_click'); // Evitar duplicados
+  // 4. Sonificación por clic en Plotly
+  document.getElementById("graficoBarras").removeAllListeners('plotly_click');
   document.getElementById("graficoBarras").on('plotly_click', function(data){
     const kms = data.points[0].x;
     const minKm = Math.min(...kmReal);
@@ -133,19 +156,14 @@ function crearGrafico(datos) {
 // MOTOR DE SONIFICACIÓN (Ritmo)
 // ==============================
 function reproducirSonificacion(kmClick, minKm, maxKm) {
-  // Inicializar contexto de audio si no existe (Requiere interacción del usuario)
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   
-  if(oscInterval) clearInterval(oscInterval); // Detener sonido anterior si existe
+  if(oscInterval) clearInterval(oscInterval); 
 
-  // Mapear Kilometros a un intervalo de tiempo (Ritmo)
-  // Menos KM = Más lento (ej. 700ms entre clics)
-  // Más KM = Más rápido (ej. 100ms entre clics)
   let ratio = (kmClick - minKm) / (maxKm - minKm || 1);
   let intervaloMs = 700 - (ratio * 600); 
 
   let contador = 0;
-  // Sonar un "clic" constante según el ritmo calculado durante 15 pulsos
   oscInterval = setInterval(() => {
     generarSonidoClic();
     contador++;
@@ -160,10 +178,9 @@ function generarSonidoClic() {
   osc.connect(gain);
   gain.connect(audioCtx.destination);
   
-  osc.type = 'triangle'; // Tono tipo motor mecánico suave
+  osc.type = 'triangle';
   osc.frequency.value = 150; 
   
-  // Envolvente de volumen corta (tipo percusión/clic)
   gain.gain.setValueAtTime(1, audioCtx.currentTime);
   gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
   
