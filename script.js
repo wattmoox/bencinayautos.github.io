@@ -3,6 +3,7 @@ let presupuestoActual = 50;
 let continenteActual = "Todos";
 let audioCtx;
 let oscInterval;
+let maxKmGlobal = 0; // Variable para fijar el eje X
 
 // Colores asignados a cada continente (Paleta conceptual recomendada)
 const coloresContinente = {
@@ -28,6 +29,12 @@ fetch("datos/datos_a_utilizar.json?v=11")
       d["Precio Aprox. Litro Gasolina (USD)"] &&
       d["Consumo Mixto Aprox."]
     );
+
+    // Calcular el límite fijo del eje X (presupuesto máximo de 100 USD)
+    const presupuestoMaximo = 100;
+    maxKmGlobal = Math.max(...datosGlobales.map(d => {
+      return (presupuestoMaximo / Number(d["Precio Aprox. Litro Gasolina (USD)"])) * Number(d["Consumo Mixto Aprox."]);
+    }));
 
     configurarControles();
     actualizarVisualizacion();
@@ -62,7 +69,6 @@ function actualizarVisualizacion() {
   }
 
   // 2. Recalcular Kilómetros en base al presupuesto dinámico
-  // Fórmula: (Presupuesto / Precio Bencina) * Consumo Vehículo
   const datosCalculados = datosFiltrados.map(d => {
     const precio = Number(d["Precio Aprox. Litro Gasolina (USD)"]);
     const consumo = Number(d["Consumo Mixto Aprox."]);
@@ -80,22 +86,19 @@ function crearGrafico(datos) {
   const paises = datos.map(d => d["País"]);
   const kmReal = datos.map(d => d.kmDinamico);
   const colores = datos.map(d => coloresContinente[d["Continente"]] || "#64748b");
-  const maxKm = Math.max(...kmReal, 1); 
 
-  // Generar los objetos de imagen para cada barra (Anclados a cada País)
+  // Generar los objetos de imagen usando maxKmGlobal para mantener tamaño consistente
   const imagenesAutos = datos.map(d => {
     const modelo = d["Sedán Más Vendido (Combustión)"];
-    
-    // Transformar "Nissan Versa" a "nissan_versa" para coincidir con tus archivos
     let nombreArchivo = modelo.toLowerCase().trim().replace(/\s+/g, '_');
     
     return {
       source: `img/autos/${nombreArchivo}.png`, 
       xref: "x",
       yref: "y",
-      x: d.kmDinamico + (maxKm * 0.01), 
+      x: d.kmDinamico + (maxKmGlobal * 0.01), 
       y: d["País"],
-      sizex: maxKm * 0.08, 
+      sizex: maxKmGlobal * 0.08, 
       sizey: 0.8, 
       xanchor: "left",
       yanchor: "middle"
@@ -117,8 +120,7 @@ function crearGrafico(datos) {
   };
 
   const traceKm = {
-    // Aumentamos el desplazamiento (0.12) para que el texto aparezca después del auto
-    x: kmReal.map(v => v + (maxKm * 0.12)), 
+    x: kmReal.map(v => v + (maxKmGlobal * 0.12)), // Espaciado fijo del texto
     y: paises,
     mode: "text",
     text: kmReal.map(v => `${v.toFixed(1)} km`),
@@ -129,26 +131,37 @@ function crearGrafico(datos) {
   };
 
   const layout = {
-    xaxis: { showgrid: true, showticklabels: true, zeroline: true, rangemode: 'tozero' },
+    xaxis: { 
+      showgrid: true, 
+      showticklabels: true, 
+      zeroline: true, 
+      rangemode: 'tozero',
+      range: [0, maxKmGlobal * 1.2] // Eje X fijo
+    },
     yaxis: { automargin: true, tickfont: { size: 13 } },
-    // Aumentamos el margen derecho para evitar que las etiquetas se corten
     margin: { t: 30, r: 150, b: 50, l: 150 }, 
     showlegend: false,
     height: Math.max(400, datos.length * 40), 
     bargap: 0.15,
     plot_bgcolor: "white",
     paper_bgcolor: "white",
-    images: imagenesAutos // Inyección de las imágenes en el layout
+    images: imagenesAutos,
+    transition: {
+      duration: 500, // Medio segundo de animación
+      easing: 'cubic-in-out' // Transición fluida
+    }
   };
 
-  Plotly.newPlot("graficoBarras", [traceBarras, traceKm], layout, { responsive: true, displayModeBar: false });
+  // Usamos Plotly.react para animar en lugar de redibujar desde cero
+  Plotly.react("graficoBarras", [traceBarras, traceKm], layout, { responsive: true, displayModeBar: false });
 
   // 4. Sonificación por clic en Plotly
-  document.getElementById("graficoBarras").removeAllListeners('plotly_click');
-  document.getElementById("graficoBarras").on('plotly_click', function(data){
+  const graficoDiv = document.getElementById("graficoBarras");
+  graficoDiv.removeAllListeners('plotly_click');
+  graficoDiv.on('plotly_click', function(data){
     const kms = data.points[0].x;
-    const minKm = Math.min(...kmReal);
-    reproducirSonificacion(kms, minKm, maxKm);
+    // Usamos el maxKmGlobal para consistencia rítmica
+    reproducirSonificacion(kms, 0, maxKmGlobal);
   });
 }
 
