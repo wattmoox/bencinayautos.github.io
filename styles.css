@@ -1,22 +1,24 @@
 /* =========================
-   ESTILOS GENERALES (DISEÑO PLANO)
+   ESTILOS GENERALES
 ========================= */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  background: #ffffff;
+  background: #ffffff; /* Fondo completamente blanco para el resto de la página */
   color: #222;
 }
 
+/* El bloque azul de arriba */
 .hero {
   text-align: center;
-  padding: 60px 20px 20px 20px;
-  background: none;
-  color: #1e3a8a; 
+  padding: 40px 20px;
+  background: #1e3a8a; /* Vuelve el fondo azul oscuro */
+  color: white;        /* Texto en blanco para contrastar */
+}
 
 .hero h1 {
   margin-bottom: 10px;
-  font-size: 2.5rem;
+  font-size: 2.2rem;
 }
 
 .hero p {
@@ -24,7 +26,7 @@ body {
   margin: 0 auto;
   line-height: 1.6;
   font-size: 1.1rem;
-  color: #475569;
+  color: #e0e7ff; /* Un blanco/celeste muy suave para el párrafo */
 }
 
 .contenedor {
@@ -34,17 +36,16 @@ body {
 }
 
 /* =========================
-   CONTROLES (SIN MARCOS)
+   CONTROLES (PLANOS, SIN MARCOS)
 ========================= */
 .controles {
-  padding: 20px 0;
-  margin-top: 0;
+  padding: 30px 0 20px 0; /* Espacio limpio arriba y abajo */
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0; /* Línea sutil para separar del gráfico */
 }
 
 .control-group {
@@ -78,7 +79,7 @@ body {
 }
 
 /* =========================
-   GRAFICO (INTEGRADO AL FONDO)
+   GRAFICO
 ========================= */
 .grafico-section {
   padding: 40px 0;
@@ -96,7 +97,7 @@ body {
 }
 
 /* =========================
-   LEYENDA (ESTILO LIMPIO)
+   LEYENDA
 ========================= */
 .leyenda {
   display: flex;
@@ -123,7 +124,7 @@ body {
   display: inline-block;
 }
 
-/* Colores Okabe-Ito para accesibilidad */
+/* Colores Okabe-Ito (Accesibles) */
 .america { background: #56B4E9; }
 .europa  { background: #0072B2; }
 .asia    { background: #D55E00; }
