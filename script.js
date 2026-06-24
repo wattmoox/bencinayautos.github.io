@@ -5,13 +5,13 @@ let audioCtx;
 let oscInterval;
 let maxKmGlobal = 0; // Variable para fijar el eje X
 
-// Paleta Okabe-Ito (100% segura para daltónicos)
+// Colores asignados a cada continente (Paleta conceptual recomendada)
 const coloresContinente = {
-  "América": "#56B4E9", // Celeste claro
-  "Europa": "#0072B2",  // Azul oscuro
-  "Asia": "#D55E00",    // Naranja rojizo
-  "África": "#E69F00",  // Naranja amarillento
-  "Oceanía": "#CC79A7"  // Púrpura rosado
+  "América": "#2A9D8F",
+  "Europa": "#1D3557",
+  "Asia": "#E63946",
+  "África": "#F4A261",
+  "Oceanía": "#00B4D8"
 };
 
 // Carga inicial
@@ -38,6 +38,9 @@ fetch("datos/datos_a_utilizar.json?v=11")
 
     configurarControles();
     actualizarVisualizacion();
+
+    // ARDUINO: iniciar modulo de fisicalizacion
+    ArduinoFisico.init();
   })
   .catch(error => {
     document.getElementById("graficoBarras").innerHTML = `<div class="error">${error.message}</div>`;
@@ -159,54 +162,53 @@ function crearGrafico(datos) {
   const graficoDiv = document.getElementById("graficoBarras");
   graficoDiv.removeAllListeners('plotly_click');
   graficoDiv.on('plotly_click', function(data){
-    const kms = data.points[0].x;
-    // Usamos el maxKmGlobal para consistencia rítmica
+    const kms  = data.points[0].x;
+    const pais = data.points[0].y;
+
+    // Sonificacion ritmica original (se mantiene igual)
     reproducirSonificacion(kms, 0, maxKmGlobal);
+
+    // ARDUINO: fisicalizacion con el auto
+    const datosPais = datosGlobales.find(d => d["País"] === pais);
+    const precio = datosPais
+      ? Number(datosPais["Precio Aprox. Litro Gasolina (USD)"])
+      : null;
+    ArduinoFisico.reproducirDesdeKm(kms, maxKmGlobal, precio, pais);
   });
 }
 
 // ==============================
-// MOTOR DE SONIFICACIÓN (Eficiencia)
+// MOTOR DE SONIFICACIÓN (Ritmo)
 // ==============================
 function reproducirSonificacion(kmClick, minKm, maxKm) {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   
   if(oscInterval) clearInterval(oscInterval); 
 
-  // Ratio de 0 a 1 (0 = Menos eficiente, 1 = Más eficiente)
   let ratio = (kmClick - minKm) / (maxKm - minKm || 1);
-  
-  // Ritmo: Ineficiente = Lento (700ms), Eficiente = Rápido (150ms)
-  let intervaloMs = 700 - (ratio * 550); 
+  let intervaloMs = 700 - (ratio * 600); 
 
   let contador = 0;
   oscInterval = setInterval(() => {
-    // Le pasamos el ratio a la función del sonido para alterar el tono
-    generarSonidoEficiencia(ratio);
+    generarSonidoClic();
     contador++;
     if(contador > 15) clearInterval(oscInterval);
   }, intervaloMs);
 }
 
-function generarSonidoEficiencia(ratio) {
+function generarSonidoClic() {
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
   
   osc.connect(gain);
   gain.connect(audioCtx.destination);
   
-  // Onda 'sine': Sonido puro, suave y "eléctrico" (representa eficiencia y bajo roce)
-  osc.type = 'sine'; 
+  osc.type = 'triangle';
+  osc.frequency.value = 150; 
   
-  // Tono dinámico: Ineficiente = Sonido grave (200Hz), Eficiente = Sonido agudo (800Hz)
-  const frecuencia = 200 + (ratio * 600);
-  osc.frequency.value = frecuencia; 
-  
-  // Envolvente de volumen: un "ping" suave y futurista
-  gain.gain.setValueAtTime(0, audioCtx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.7, audioCtx.currentTime + 0.02); // Sube rápido
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2); // Baja suavemente
+  gain.gain.setValueAtTime(1, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
   
   osc.start(audioCtx.currentTime);
-  osc.stop(audioCtx.currentTime + 0.25);
+  osc.stop(audioCtx.currentTime + 0.1);
 }
