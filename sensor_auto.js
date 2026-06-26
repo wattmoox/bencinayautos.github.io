@@ -38,7 +38,7 @@ const SensorAuto = (() => {
   let ctx = null, motorOsc = null, motorGain = null, motorFiltro = null;
 
   // ---- Conexión (PeerJS) ----
-  let peer = null, conn = null, codigo = null;
+  let peer = null, conn = null, codigo = null, timeoutConexion = null;
 
   // ============================================================
   function init() {
@@ -93,12 +93,37 @@ const SensorAuto = (() => {
   //  CONEXIÓN — el computador es el "anfitrión" (host)
   // ============================================================
   function iniciarConexion() {
+    mostrarPanelVacio(); // mostrar el panel de inmediato con "generando…"
+
     if (typeof Peer === "undefined") {
-      setEstado("No se cargó la librería de conexión (revisa tu internet). Puedes probar con las flechas ↑ ↓.");
+      const codEl = document.getElementById("codigoConexion");
+      if (codEl) codEl.textContent = "(sin conexión)";
+      setEstado("⚠️ No se cargó la librería de conexión (PeerJS). Revisa tu internet o que la red no bloquee unpkg.com. Mientras tanto puedes probar con las flechas ↑ ↓.");
       return;
     }
+
     codigo = nuevoCodigo();
     crearPeer(0);
+
+    // Si en 8 segundos no se conecta al servidor de emparejamiento, avisar
+    clearTimeout(timeoutConexion);
+    timeoutConexion = setTimeout(() => {
+      if (!peer || !peer.open) {
+        const codEl = document.getElementById("codigoConexion");
+        if (codEl) codEl.textContent = "(sin conexión)";
+        setEstado("⏳ No se pudo conectar al servidor de emparejamiento. Verifica tu internet (prueba con datos móviles o cambia de red). Para la demo también puedes usar las flechas ↑ ↓.");
+      }
+    }, 8000);
+  }
+
+  function mostrarPanelVacio() {
+    const panel = document.getElementById("panelConexion");
+    const codEl = document.getElementById("codigoConexion");
+    const qrEl  = document.getElementById("qrConexion");
+    if (codEl) codEl.textContent = "generando…";
+    if (qrEl)  qrEl.innerHTML = "";
+    if (panel) panel.style.display = "flex";
+    setEstado("Generando código de conexión…");
   }
 
   function nuevoCodigo() {
@@ -113,7 +138,7 @@ const SensorAuto = (() => {
       return;
     }
 
-    peer.on("open", () => mostrarPanel());
+    peer.on("open", () => { clearTimeout(timeoutConexion); mostrarPanel(); });
 
     peer.on("error", (err) => {
       const tipo = err && err.type ? err.type : "?";
@@ -122,7 +147,10 @@ const SensorAuto = (() => {
         codigo = nuevoCodigo();
         crearPeer(intento + 1);
       } else {
-        setEstado("Problema de conexión (" + tipo + "). Reintenta con 'Detener' e 'Iniciar', o usa las flechas ↑ ↓.");
+        clearTimeout(timeoutConexion);
+        const codEl = document.getElementById("codigoConexion");
+        if (codEl) codEl.textContent = "(error)";
+        setEstado("Problema de conexión (" + tipo + "). Reintenta con 'Detener' e 'Iniciar', cambia de red, o usa las flechas ↑ ↓.");
       }
     });
 
