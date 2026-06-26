@@ -193,3 +193,52 @@ body {
   font-weight: normal;
   line-height: 1.5;
 }
+
+/* Panel de conexión (código + QR) */
+.panel-conexion {
+  display: none;            /* se muestra al iniciar el modo auto */
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin: 6px auto 0 auto;
+  padding: 18px;
+  max-width: 420px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+}
+
+.codigo-box {
+  font-size: 1.05rem;
+  font-weight: normal;
+  color: #374151;
+}
+
+.codigo-box b {
+  font-size: 2rem;
+  letter-spacing: 6px;
+  color: #1e3a8a;
+  display: block;
+  margin-top: 4px;
+}
+
+.qr-box {
+  width: 170px;
+  height: 170px;
+  background: #fff;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.qr-box img, .qr-box canvas { display: block; }
+
+.ayuda-conexion {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: normal;
+  color: #4b5563;
+  margin: 0;
+  line-height: 1.5;
+  word-break: break-all;
+}

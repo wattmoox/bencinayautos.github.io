@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="styles.css">
 
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <!-- Conexión teléfono ↔ computador (PeerJS) y generador de QR -->
+  <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
 
@@ -43,17 +46,30 @@
         🔊 <b>Sonificación:</b> Haz <i>clic</i> en la barra de cualquier país para escuchar su rendimiento (Ritmo rápido = Mayor distancia).
       </div>
 
-      <!-- ===== NUEVO: Modo Auto (teléfono como sensor) ===== -->
+      <!-- ===== MODO AUTO: el teléfono es el control, esta pantalla es el tablero ===== -->
       <div class="control-group modo-auto">
         <button id="btnModoAuto">▶ Iniciar modo auto</button>
         <label class="invertir">
           <input type="checkbox" id="chkInvertir"> Invertir dirección
         </label>
         <p id="estadoModoAuto" class="estado-auto">
-          🚗 Monta el teléfono sobre el auto y toca "Iniciar modo auto". Inclínalo hacia adelante para avanzar:
-          todas las barras crecen hasta el límite de tu presupuesto y cada país avisa cuando se queda sin bencina.
-          (En el computador puedes probar con las flechas ↑ ↓ del teclado.)
+          🚗 Toca "Iniciar modo auto": aparecerá un código. Abre <b>control.html</b> en tu teléfono,
+          escribe ese código (o escanea el QR) y monta el teléfono sobre el auto. Al inclinarlo hacia adelante,
+          las barras crecen hasta el límite de tu presupuesto y cada país avisa cuando se queda sin bencina.
+          (Para probar sin teléfono usa las flechas ↑ ↓ del teclado.)
         </p>
+
+        <div id="panelConexion" class="panel-conexion">
+          <div class="codigo-box">
+            Código de conexión:
+            <b id="codigoConexion">----</b>
+          </div>
+          <div id="qrConexion" class="qr-box"></div>
+          <p class="ayuda-conexion">
+            En el teléfono abre: <b id="urlControl">control.html</b><br>
+            y escribe el código, o escanea este QR.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -72,7 +88,6 @@
 
   </main>
 
-  <!-- El módulo del sensor debe cargarse junto con el script principal -->
   <script src="script.js"></script>
   <script src="sensor_auto.js"></script>
 </body>
