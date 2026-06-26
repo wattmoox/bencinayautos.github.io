@@ -14,19 +14,19 @@
   <header class="hero">
     <h1>¿Qué tan lejos llegas según tu país?</h1>
     <p>
-      Explora la brecha de movilidad. Ajusta tu presupuesto y descubre cuántos kilómetros 
+      Explora la brecha de movilidad. Ajusta tu presupuesto y descubre cuántos kilómetros
       puedes recorrer en el sedán más vendido de cada país considerando el precio local de la gasolina.
     </p>
   </header>
 
   <main class="contenedor">
-    
+
     <section class="controles">
       <div class="control-group">
         <label for="presupuestoSlider">Presupuesto (USD): <span id="valorPresupuesto">$50</span></label>
         <input type="range" id="presupuestoSlider" min="10" max="100" step="5" value="50">
       </div>
-      
+
       <div class="control-group">
         <label for="continenteFilter">Filtrar por Continente:</label>
         <select id="continenteFilter">
@@ -41,6 +41,19 @@
 
       <div class="instruccion-sonido">
         🔊 <b>Sonificación:</b> Haz <i>clic</i> en la barra de cualquier país para escuchar su rendimiento (Ritmo rápido = Mayor distancia).
+      </div>
+
+      <!-- ===== NUEVO: Modo Auto (teléfono como sensor) ===== -->
+      <div class="control-group modo-auto">
+        <button id="btnModoAuto">▶ Iniciar modo auto</button>
+        <label class="invertir">
+          <input type="checkbox" id="chkInvertir"> Invertir dirección
+        </label>
+        <p id="estadoModoAuto" class="estado-auto">
+          🚗 Monta el teléfono sobre el auto y toca "Iniciar modo auto". Inclínalo hacia adelante para avanzar:
+          todas las barras crecen hasta el límite de tu presupuesto y cada país avisa cuando se queda sin bencina.
+          (En el computador puedes probar con las flechas ↑ ↓ del teclado.)
+        </p>
       </div>
     </section>
 
@@ -58,8 +71,9 @@
     </section>
 
   </main>
-  <!-- modulo de fisicalizacion-->
-  <script src="arduino_module.js"></script>
+
+  <!-- El módulo del sensor debe cargarse junto con el script principal -->
   <script src="script.js"></script>
+  <script src="sensor_auto.js"></script>
 </body>
 </html>

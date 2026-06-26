@@ -4,16 +4,15 @@
 body {
   font-family: Arial, sans-serif;
   margin: 0;
-  background: #ffffff; /* Fondo completamente blanco para el resto de la página */
+  background: #f5f7fa;
   color: #222;
 }
 
-/* El bloque azul de arriba */
 .hero {
   text-align: center;
   padding: 40px 20px;
-  background: #1e3a8a; /* Vuelve el fondo azul oscuro */
-  color: white;        /* Texto en blanco para contrastar */
+  background: #1e3a8a;
+  color: white;
 }
 
 .hero h1 {
@@ -26,7 +25,6 @@ body {
   margin: 0 auto;
   line-height: 1.6;
   font-size: 1.1rem;
-  color: #e0e7ff; /* Un blanco/celeste muy suave para el párrafo */
 }
 
 .contenedor {
@@ -36,16 +34,20 @@ body {
 }
 
 /* =========================
-   CONTROLES (PLANOS, SIN MARCOS)
+   CONTROLES (INTERACCIÓN)
 ========================= */
 .controles {
-  padding: 30px 0 20px 0; /* Espacio limpio arriba y abajo */
+  background: white;
+  padding: 20px 24px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: -20px auto 30px auto;
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
   align-items: center;
   justify-content: center;
-  border-bottom: 1px solid #e2e8f0; /* Línea sutil para separar del gráfico */
+  position: relative;
 }
 
 .control-group {
@@ -65,31 +67,35 @@ body {
   padding: 8px 12px;
   font-size: 1rem;
   border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  background: white;
+  border: 1px solid #ccc;
   cursor: pointer;
 }
 
 .instruccion-sonido {
   width: 100%;
   text-align: center;
-  margin-top: 15px;
+  margin-top: 10px;
   color: #1e3a8a;
-  font-size: 1rem;
+  background: #e0f2fe;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.95rem;
 }
 
 /* =========================
    GRAFICO
 ========================= */
 .grafico-section {
-  padding: 40px 0;
-  margin: 0;
+  background: white;
+  padding: 24px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin: 30px 0;
 }
 
 .grafico-section h2 {
   text-align: center;
   color: #333;
-  margin-bottom: 20px;
 }
 
 #graficoBarras {
@@ -103,11 +109,13 @@ body {
   display: flex;
   flex-wrap: wrap;
   gap: 14px 22px;
-  margin-top: 40px;
+  margin-top: 28px;
   justify-content: center;
   font-size: 1rem;
-  padding: 20px 0;
-  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 14px 18px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
 }
 
 .leyenda-item {
@@ -124,15 +132,64 @@ body {
   display: inline-block;
 }
 
-/* Colores Okabe-Ito (Accesibles) */
-.america { background: #56B4E9; }
-.europa  { background: #0072B2; }
-.asia    { background: #D55E00; }
-.africa  { background: #E69F00; }
-.oceania { background: #CC79A7; }
+.america { background: #2A9D8F; }
+.europa { background: #1D3557; }
+.asia { background: #E63946; }
+.africa { background: #F4A261; }
+.oceania { background: #00B4D8; }
 
 @media (max-width: 768px) {
-  .hero h1 { font-size: 1.8rem; }
+  .hero h1 { font-size: 1.5rem; }
   .control-group input[type="range"] { width: 100%; }
   #graficoBarras { height: 600px; }
+}
+
+/* =========================
+   MODO AUTO (teléfono como sensor)
+========================= */
+.modo-auto {
+  width: 100%;
+  align-items: center;
+  gap: 12px;
+}
+
+#btnModoAuto {
+  padding: 12px 22px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: white;
+  background: #16a34a;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#btnModoAuto:hover { background: #15803d; }
+#btnModoAuto:active { transform: scale(0.97); }
+#btnModoAuto.activo { background: #dc2626; }
+#btnModoAuto.activo:hover { background: #b91c1c; }
+
+.modo-auto .invertir {
+  font-weight: normal;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.estado-auto {
+  width: 100%;
+  max-width: 700px;
+  text-align: center;
+  margin: 4px auto 0 auto;
+  color: #374151;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: normal;
+  line-height: 1.5;
 }
