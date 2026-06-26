@@ -24,7 +24,7 @@ const SensorAuto = (() => {
   // ---- Sensibilidad del MOVIMIENTO (ajustable) ----
   // Si el gráfico avanza demasiado rápido al empujar, BAJA SENSIBILIDAD.
   // Si avanza muy poco, SÚBELA.
-  const SENSIBILIDAD = 0.15;   // cuánto avanza el gráfico por empuje
+  const SENSIBILIDAD = 0.30;   // cuánto avanza el gráfico por empuje
   const FRICCION     = 0.88;   // frena el "rodado" cuando el auto se detiene (0–1)
   const UMBRAL_ACC   = 0.5;    // ignora vibraciones pequeñas (m/s²)
   const UMBRAL_VEL   = 0.05;   // por debajo de esto, se considera detenido
