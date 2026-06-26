@@ -21,16 +21,19 @@
 
 const SensorAuto = (() => {
 
-  // ---- Calibración (ajustable) ----
-  const ZONA_MUERTA_GRADOS = 6;     // inclinación mínima para empezar a avanzar
-  const INCLINACION_MAX     = 35;   // grados = velocidad máxima
-  const SEG_RECORRIDO_TOTAL = 6;    // segundos en cruzar todo a tope
-  let   invertirDireccion   = false;
+  // ---- Sensibilidad del MOVIMIENTO (ajustable) ----
+  // Si el gráfico avanza demasiado rápido al empujar, BAJA SENSIBILIDAD.
+  // Si avanza muy poco, SÚBELA.
+  const SENSIBILIDAD = 0.15;   // cuánto avanza el gráfico por empuje
+  const FRICCION     = 0.88;   // frena el "rodado" cuando el auto se detiene (0–1)
+  const UMBRAL_ACC   = 0.5;    // ignora vibraciones pequeñas (m/s²)
+  const UMBRAL_VEL   = 0.05;   // por debajo de esto, se considera detenido
+  let   invertirDireccion = false;
 
   // ---- Estado ----
   let activo = false;
-  let betaRef = null;     // ángulo "plano" de referencia (calibrado al conectar)
-  let betaActual = null;  // última inclinación recibida del teléfono
+  let accActual = 0;      // última aceleración (movimiento) recibida del teléfono
+  let velocidad = 0;      // velocidad "virtual" integrada (con fricción)
   let ultimoT = 0;
   let rafId = null;
 
@@ -63,7 +66,8 @@ const SensorAuto = (() => {
 
   function iniciar() {
     iniciarAudio();                 // el clic del botón habilita el sonido
-    betaRef = null; betaActual = null;
+    prepararVoz();                  // "despierta" la síntesis de voz (gesto del usuario)
+    accActual = 0; velocidad = 0;
     activo = true; ultimoT = 0;
     App.reiniciar();
     App.setModoAuto(true);
@@ -157,17 +161,15 @@ const SensorAuto = (() => {
     peer.on("connection", (c) => {
       conn = c;
       conn.on("open", () => {
-        betaRef = null;           // recalibrar al conectar
+        accActual = 0; velocidad = 0;
         App.reiniciar();
-        setEstado("📱 Teléfono conectado. Inclina el auto hacia ADELANTE para avanzar.");
+        setEstado("📱 Teléfono conectado. Empuja el auto hacia ADELANTE para avanzar.");
       });
       conn.on("data", (d) => {
-        if (d && typeof d.beta === "number") {
-          betaActual = d.beta;
-          if (betaRef === null) betaRef = d.beta;
-        }
+        if (d && typeof d.acc === "number") accActual = d.acc;
       });
       conn.on("close", () => {
+        accActual = 0; velocidad = 0;
         pararMotor();
         setEstado("📵 Teléfono desconectado. Vuelve a tocar 'Conectar' en el teléfono.");
       });
@@ -210,19 +212,19 @@ const SensorAuto = (() => {
     const dt = Math.min((t - ultimoT) / 1000, 0.1);
     ultimoT = t;
 
-    let factor = 0;
-    if (betaActual !== null && betaRef !== null) {
-      let inc = betaActual - betaRef;
-      if (invertirDireccion) inc = -inc;
-      if (Math.abs(inc) > ZONA_MUERTA_GRADOS) {
-        factor = Math.sign(inc) * Math.min(Math.abs(inc), INCLINACION_MAX) / INCLINACION_MAX;
-      }
-    }
+    // Integrar la aceleración del auto en una "velocidad" con fricción.
+    // Empujar el auto = aceleración → el gráfico avanza; al detenerse, frena.
+    velocidad = velocidad * FRICCION + accActual * dt;
+    if (Math.abs(accActual) < UMBRAL_ACC && Math.abs(velocidad) < UMBRAL_VEL) velocidad = 0;
 
-    const velocidad = factor * (App.getMaxKm() / SEG_RECORRIDO_TOTAL);
-    if (velocidad !== 0) App.avanzar(velocidad * dt);
+    const dir = invertirDireccion ? -1 : 1;
+    const deltaKm = dir * velocidad * App.getMaxKm() * SENSIBILIDAD * dt;
+    if (deltaKm !== 0) App.avanzar(deltaKm);
 
-    actualizarMotor(Math.abs(factor), App.getProgreso());
+    // Sonido del motor según la velocidad del auto
+    const velNorm = Math.min(Math.abs(velocidad) / 1.2, 1);
+    actualizarMotor(velNorm, App.getProgreso());
+
     rafId = requestAnimationFrame(bucle);
   }
 
@@ -293,13 +295,29 @@ const SensorAuto = (() => {
     osc.start(); osc.stop(ctx.currentTime + 0.12);
   }
 
+  // "Despierta" la síntesis de voz dentro del gesto del usuario (clic en Iniciar).
+  // Sin esto, muchos navegadores ignoran el primer speak() que ocurre después.
+  function prepararVoz() {
+    if (!("speechSynthesis" in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+      window.speechSynthesis.getVoices(); // fuerza la carga de voces
+      const warm = new SpeechSynthesisUtterance(" ");
+      warm.volume = 0;
+      window.speechSynthesis.speak(warm);
+    } catch (e) {}
+  }
+
   function hablar(texto) {
     if (!("speechSynthesis" in window)) return;
+    try { window.speechSynthesis.resume(); } catch (e) {}
     const u = new SpeechSynthesisUtterance(texto);
-    u.lang = "es-ES"; u.rate = 1.05;
+    u.rate = 1.05;
     const voces = window.speechSynthesis.getVoices();
     const vozEs = voces.find(v => v.lang && v.lang.toLowerCase().startsWith("es"));
-    if (vozEs) u.voice = vozEs;
+    if (vozEs) { u.voice = vozEs; u.lang = vozEs.lang; }
+    else { u.lang = "es-ES"; }
     window.speechSynthesis.speak(u);
   }
 
