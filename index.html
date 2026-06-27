@@ -8,7 +8,6 @@
   <link rel="stylesheet" href="styles.css?v=4">
 
   <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-  <!-- Conexión teléfono ↔ computador (PeerJS) y generador de QR -->
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -46,7 +45,6 @@
         🔊 <b>Sonificación:</b> Haz <i>clic</i> en la barra de cualquier país para escuchar su rendimiento (Ritmo rápido = Mayor distancia).
       </div>
 
-      <!-- ===== MODO AUTO: el teléfono es el control, esta pantalla es el tablero ===== -->
       <div class="control-group modo-auto">
         <button id="btnModoAuto">▶ Iniciar modo auto</button>
         <label class="invertir">
@@ -54,9 +52,7 @@
         </label>
         <p id="estadoModoAuto" class="estado-auto">
           🚗 Toca "Iniciar modo auto": aparecerá un código. Abre <b>control.html</b> en tu teléfono,
-          escribe ese código (o escanea el QR) y monta el teléfono sobre el auto. Al empujar el auto hacia adelante,
-          las barras crecen hasta el límite de tu presupuesto y cada país avisa cuando se queda sin bencina.
-          (Para probar sin teléfono usa las flechas ↑ ↓ del teclado.)
+          escribe ese código (o escanea el QR) y monta el teléfono sobre el auto.
         </p>
 
         <div id="panelConexion" class="panel-conexion">

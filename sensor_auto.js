@@ -1,39 +1,20 @@
 // ============================================================
 //  sensor_auto.js  —  Modo Auto (LADO COMPUTADOR / PANTALLA)
-//  Bencina y Autos · proyecto de visualización
-//
-//  ARQUITECTURA:
-//    [ TELÉFONO sobre el auto ]  --(inclinación)-->  [ COMPUTADOR ]
-//        control.html / control.js                   index.html (esta pantalla)
-//                         \___ PeerJS (WebRTC) ___/
-//
-//  Este archivo corre en el COMPUTADOR:
-//   - Crea un código de emparejamiento + QR para que el teléfono se conecte.
-//   - Recibe la inclinación del teléfono y hace AVANZAR el recorrido:
-//     todas las barras crecen hasta su límite de presupuesto.
-//   - Cuando un país llega a su límite: congela la barra, pita
-//     (agudo = bencina cara, rápido = auto ineficiente) y lo dice por voz.
-//   - Suena un motor mientras el auto se mueve.
-//
-//  Depende de window.App (definido en script.js) y de PeerJS (window.Peer).
-//  Para PROBAR sin teléfono: usa las flechas ↑ ↓ del teclado.
 // ============================================================
 
 const SensorAuto = (() => {
 
   // ---- Sensibilidad del MOVIMIENTO (ajustable) ----
-  // Si el gráfico avanza demasiado rápido al empujar, BAJA SENSIBILIDAD.
-  // Si avanza muy poco, SÚBELA.
-  const SENSIBILIDAD = 0.30;   // cuánto avanza el gráfico por empuje
-  const FRICCION     = 0.88;   // frena el "rodado" cuando el auto se detiene (0–1)
-  const UMBRAL_ACC   = 0.5;    // ignora vibraciones pequeñas (m/s²)
-  const UMBRAL_VEL   = 0.05;   // por debajo de esto, se considera detenido
+  const SENSIBILIDAD = 0.45;   // Se subió un poco para simular el empuje manual más fácil
+  const FRICCION     = 0.88;   
+  const UMBRAL_ACC   = 0.3;    // Más sensible para movimientos sobre la mesa
+  const UMBRAL_VEL   = 0.05;   
   let   invertirDireccion = false;
 
   // ---- Estado ----
   let activo = false;
-  let accActual = 0;      // última aceleración (movimiento) recibida del teléfono
-  let velocidad = 0;      // velocidad "virtual" integrada (con fricción)
+  let accActual = 0;      
+  let velocidad = 0;      
   let ultimoT = 0;
   let rafId = null;
 
@@ -51,7 +32,7 @@ const SensorAuto = (() => {
     const chk = document.getElementById("chkInvertir");
     if (chk) chk.addEventListener("change", e => { invertirDireccion = e.target.checked; });
 
-    // Prueba sin teléfono: flechas del teclado
+    // Teclado de emergencia si todo falla en la presentación
     window.addEventListener("keydown", (e) => {
       if (!activo) return;
       if (e.key === "ArrowUp")   { App.avanzar(App.getMaxKm() * 0.04); revMotorMomentaneo(); }
@@ -65,8 +46,8 @@ const SensorAuto = (() => {
   }
 
   function iniciar() {
-    iniciarAudio();                 // el clic del botón habilita el sonido
-    prepararVoz();                  // "despierta" la síntesis de voz (gesto del usuario)
+    iniciarAudio();                 
+    prepararVoz();                  
     accActual = 0; velocidad = 0;
     activo = true; ultimoT = 0;
     App.reiniciar();
@@ -93,29 +74,25 @@ const SensorAuto = (() => {
     setEstado("Modo auto detenido.");
   }
 
-  // ============================================================
-  //  CONEXIÓN — el computador es el "anfitrión" (host)
-  // ============================================================
   function iniciarConexion() {
-    mostrarPanelVacio(); // mostrar el panel de inmediato con "generando…"
+    mostrarPanelVacio(); 
 
     if (typeof Peer === "undefined") {
       const codEl = document.getElementById("codigoConexion");
       if (codEl) codEl.textContent = "(sin conexión)";
-      setEstado("⚠️ No se cargó la librería de conexión (PeerJS). Revisa tu internet o que la red no bloquee unpkg.com. Mientras tanto puedes probar con las flechas ↑ ↓.");
+      setEstado("⚠️ Error de librería PeerJS. Usa las flechas ↑ ↓.");
       return;
     }
 
     codigo = nuevoCodigo();
     crearPeer(0);
 
-    // Si en 8 segundos no se conecta al servidor de emparejamiento, avisar
     clearTimeout(timeoutConexion);
     timeoutConexion = setTimeout(() => {
       if (!peer || !peer.open) {
         const codEl = document.getElementById("codigoConexion");
         if (codEl) codEl.textContent = "(sin conexión)";
-        setEstado("⏳ No se pudo conectar al servidor de emparejamiento. Verifica tu internet (prueba con datos móviles o cambia de red). Para la demo también puedes usar las flechas ↑ ↓.");
+        setEstado("⏳ Conectando al servidor... Si tarda, puedes usar las flechas del teclado ↑ ↓ para la demostración.");
       }
     }, 8000);
   }
@@ -131,12 +108,16 @@ const SensorAuto = (() => {
   }
 
   function nuevoCodigo() {
-    return String(Math.floor(1000 + Math.random() * 9000)); // 4 dígitos
+    return String(Math.floor(1000 + Math.random() * 9000)); 
   }
 
   function crearPeer(intento) {
     try {
-      peer = new Peer("bencinayautos-" + codigo);
+      peer = new Peer("bencinayautos-" + codigo, {
+        host: '0.peerjs.com',
+        port: 443,
+        secure: true
+      });
     } catch (e) {
       setEstado("Error iniciando la conexión.");
       return;
@@ -146,7 +127,6 @@ const SensorAuto = (() => {
 
     peer.on("error", (err) => {
       const tipo = err && err.type ? err.type : "?";
-      // Si el código ya está en uso, generamos otro
       if (tipo === "unavailable-id" && intento < 3) {
         codigo = nuevoCodigo();
         crearPeer(intento + 1);
@@ -154,7 +134,7 @@ const SensorAuto = (() => {
         clearTimeout(timeoutConexion);
         const codEl = document.getElementById("codigoConexion");
         if (codEl) codEl.textContent = "(error)";
-        setEstado("Problema de conexión (" + tipo + "). Reintenta con 'Detener' e 'Iniciar', cambia de red, o usa las flechas ↑ ↓.");
+        setEstado("Usa las flechas del teclado ↑ ↓ para la demostración si el Wi-Fi bloquea PeerJS.");
       }
     });
 
@@ -163,7 +143,7 @@ const SensorAuto = (() => {
       conn.on("open", () => {
         accActual = 0; velocidad = 0;
         App.reiniciar();
-        setEstado("📱 Teléfono conectado. Empuja el auto hacia ADELANTE para avanzar.");
+        setEstado("📱 Teléfono conectado. ¡Empuja el chasis físicamente hacia adelante!");
       });
       conn.on("data", (d) => {
         if (d && typeof d.acc === "number") accActual = d.acc;
@@ -171,7 +151,7 @@ const SensorAuto = (() => {
       conn.on("close", () => {
         accActual = 0; velocidad = 0;
         pararMotor();
-        setEstado("📵 Teléfono desconectado. Vuelve a tocar 'Conectar' en el teléfono.");
+        setEstado("📵 Teléfono desconectado.");
       });
     });
   }
@@ -191,10 +171,10 @@ const SensorAuto = (() => {
       qrEl.innerHTML = "";
       try {
         if (typeof QRCode !== "undefined") new QRCode(qrEl, { text: fullURL, width: 170, height: 170 });
-      } catch (e) { /* el QR es opcional: el código escrito basta */ }
+      } catch (e) { }
     }
     if (panel) panel.style.display = "flex";
-    setEstado("Esperando al teléfono… Código " + codigo + ". Abre control.html en el celular o escanea el QR.");
+    setEstado("Esperando al teléfono… Código " + codigo + ". Escanea el QR con tu celular.");
   }
 
   function cerrarConexion() {
@@ -203,17 +183,12 @@ const SensorAuto = (() => {
     conn = null; peer = null;
   }
 
-  // ============================================================
-  //  BUCLE: integra la inclinación recibida → avance del recorrido
-  // ============================================================
   function bucle(t) {
     if (!activo) return;
     if (ultimoT === 0) ultimoT = t;
     const dt = Math.min((t - ultimoT) / 1000, 0.1);
     ultimoT = t;
 
-    // Integrar la aceleración del auto en una "velocidad" con fricción.
-    // Empujar el auto = aceleración → el gráfico avanza; al detenerse, frena.
     velocidad = velocidad * FRICCION + accActual * dt;
     if (Math.abs(accActual) < UMBRAL_ACC && Math.abs(velocidad) < UMBRAL_VEL) velocidad = 0;
 
@@ -221,16 +196,12 @@ const SensorAuto = (() => {
     const deltaKm = dir * velocidad * App.getMaxKm() * SENSIBILIDAD * dt;
     if (deltaKm !== 0) App.avanzar(deltaKm);
 
-    // Sonido del motor según la velocidad del auto
     const velNorm = Math.min(Math.abs(velocidad) / 1.2, 1);
     actualizarMotor(velNorm, App.getProgreso());
 
     rafId = requestAnimationFrame(bucle);
   }
 
-  // ============================================================
-  //  AUDIO: motor continuo
-  // ============================================================
   function iniciarAudio() {
     if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
     if (ctx.state === "suspended") ctx.resume();
@@ -268,11 +239,6 @@ const SensorAuto = (() => {
     if (motorGain && ctx) motorGain.gain.setTargetAtTime(0, ctx.currentTime, 0.1);
   }
 
-  // ============================================================
-  //  AVISO cuando un país se queda sin presupuesto
-  //  tono más agudo = bencina más cara · ritmo más rápido = más ineficiente
-  //  (llamado desde script.js / App)
-  // ============================================================
   function anunciarAgotado(pais, precio, consumo) {
     if (!ctx) iniciarAudio();
     const r = App.getRangos();
@@ -295,14 +261,12 @@ const SensorAuto = (() => {
     osc.start(); osc.stop(ctx.currentTime + 0.12);
   }
 
-  // "Despierta" la síntesis de voz dentro del gesto del usuario (clic en Iniciar).
-  // Sin esto, muchos navegadores ignoran el primer speak() que ocurre después.
   function prepararVoz() {
     if (!("speechSynthesis" in window)) return;
     try {
       window.speechSynthesis.cancel();
       window.speechSynthesis.resume();
-      window.speechSynthesis.getVoices(); // fuerza la carga de voces
+      window.speechSynthesis.getVoices(); 
       const warm = new SpeechSynthesisUtterance(" ");
       warm.volume = 0;
       window.speechSynthesis.speak(warm);
@@ -324,10 +288,9 @@ const SensorAuto = (() => {
   function anunciarFin() {
     pararMotor();
     setTimeout(() => hablar("Todos los países llegaron a su límite de presupuesto"), 200);
-    setEstado("✅ Todos los países llegaron a su límite. Toca 'Detener' para terminar.");
+    setEstado("✅ Todos los países llegaron a su límite.");
   }
 
-  // ---- utilidades ----
   function mapear(v, inMin, inMax, outMin, outMax) {
     const t = Math.max(0, Math.min(1, (v - inMin) / (inMax - inMin || 1)));
     return outMin + t * (outMax - outMin);

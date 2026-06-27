@@ -4,14 +4,16 @@
 //  computador por PeerJS. Empujar el auto hacia adelante/atrás
 //  hace avanzar/retroceder el gráfico en la pantalla del computador.
 // ============================================================
+// ============================================================
+//  control.js  —  LADO TELÉFONO (control remoto del auto)
+// ============================================================
 
 (function () {
   const inputCodigo = document.getElementById("codigo");
   const btn    = document.getElementById("btnConectar");
   const estado = document.getElementById("estado");
-  const movEl  = document.getElementById("tilt"); // reutilizamos el elemento
+  const movEl  = document.getElementById("tilt"); 
 
-  // Si el código viene en la URL (al escanear el QR), lo rellenamos
   const params = new URLSearchParams(location.search);
   if (params.get("code")) inputCodigo.value = params.get("code");
 
@@ -26,7 +28,6 @@
       return;
     }
 
-    // Permiso del sensor de MOVIMIENTO (obligatorio en iPhone) — pedir con un toque
     const permiso = await pedirPermiso();
     if (permiso === "denegado") {
       estado.textContent = "Permiso de movimiento denegado. Actívalo y reintenta.";
@@ -43,7 +44,13 @@
     }
 
     estado.textContent = "Conectando…";
-    peer = new Peer();
+    
+    // Configuración robusta para emparejar en la misma nube
+    peer = new Peer({
+      host: '0.peerjs.com',
+      port: 443,
+      secure: true
+    });
 
     peer.on("open", () => {
       conn = peer.connect("bencinayautos-" + code);
@@ -64,12 +71,11 @@
 
     peer.on("error", (err) => {
       const tipo = err && err.type ? err.type : "?";
-      estado.textContent = "No se pudo conectar (" + tipo + "). Verifica el código y el internet.";
+      estado.textContent = "No se pudo conectar (" + tipo + "). Reintenta.";
       btn.disabled = false;
     });
   }
 
-  // En iPhone, el sensor de movimiento (DeviceMotion) requiere permiso explícito
   async function pedirPermiso() {
     if (typeof DeviceMotionEvent === "undefined") return "no-soportado";
     if (typeof DeviceMotionEvent.requestPermission === "function") {
@@ -78,24 +84,18 @@
         return r === "granted" ? "ok" : "denegado";
       } catch (e) { return "denegado"; }
     }
-    return "ok"; // Android no requiere permiso explícito
+    return "ok"; 
   }
 
-  // ============================================================
-  //  LECTURA DEL ACELERÓMETRO
-  //  Usamos el eje Y del teléfono (su lado largo) como "adelante/atrás".
-  //  Monta el teléfono con la parte de arriba apuntando al frente del auto.
-  // ============================================================
   function iniciarSensor() {
     if (enviando) return;
     enviando = true;
 
-    let baseline = null;          // valor en reposo (para restar el sesgo/gravedad)
+    let baseline = null;          
     let muestras = [];
     let ultimo = 0;
 
     window.addEventListener("devicemotion", (e) => {
-      // Preferimos la aceleración SIN gravedad; si no existe, usamos la que la incluye
       let ay = null;
       if (e.acceleration && e.acceleration.y !== null && e.acceleration.y !== undefined) {
         ay = e.acceleration.y;
@@ -105,22 +105,21 @@
       if (ay === null) return;
 
       const now = Date.now();
-      if (now - ultimo < 33) return; // ~30 envíos por segundo
+      if (now - ultimo < 33) return; 
       ultimo = now;
 
-      // Calibración inicial (~0.7 s): el auto debe estar quieto al conectar
       if (baseline === null) {
         muestras.push(ay);
         if (muestras.length >= 20) {
           baseline = muestras.reduce((a, b) => a + b, 0) / muestras.length;
-          estado.textContent = "✅ Listo. Empuja el auto hacia adelante.";
+          estado.textContent = "✅ Listo. Empuja el chasis hacia adelante.";
         } else {
-          estado.textContent = "Calibrando… deja el auto quieto un segundo.";
+          estado.textContent = "Calibrando… deja el dispositivo quieto.";
         }
         return;
       }
 
-      const mov = ay - baseline; // movimiento real (m/s²) respecto al reposo
+      const mov = ay - baseline; 
       if (conn && conn.open) conn.send({ acc: mov });
 
       movEl.textContent = "Movimiento: " + mov.toFixed(1);
